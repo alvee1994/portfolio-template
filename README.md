@@ -86,7 +86,7 @@ Paste the **secret key**. Keep the **sitekey** for the next step.
 
 ### 5. Your page
 
-- `config.js`: keep only the `messages` entry in `window.BACKENDS`, set its `url` to your Worker address, and set `TURNSTILE_SITEKEY` to your sitekey.
+- `config.js`: keep only the `messages` entry in `window.BACKENDS`, set its `url` to your Worker address, set `TURNSTILE_SITEKEY` to your sitekey, and set `GREETING` to your own first line.
 - `index.html`: change `<title>`, the description, and everything between the `CHANGE` comment and the chat widget. Keep the ids `ask`, `launch` and `panel`.
 
 Never put your CV file in the repo. The repo is public.

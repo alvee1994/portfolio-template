@@ -2,7 +2,7 @@ const $ = id => document.getElementById(id);
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 // Back ends from config.js. "session" = Managed Agent deployment (start a run, poll events).
 // "chat" = stateless Worker (Messages API or OpenRouter): the page keeps the history and posts it each turn.
-const BACKENDS = window.BACKENDS;
+const BACKENDS = window.BACKENDS.filter(b => !b.disabled);
 let backend = BACKENDS[0];
 let session = null; // signed ticket { sid, exp, sig } from the Worker
 let history = [];   // chat back ends only: assistant, user, assistant, ...
@@ -81,6 +81,7 @@ function turnstileToken() {
 
 async function start() {
   if (!session) session = await api('/session', { token: await turnstileToken() }); // reopen after an error reuses it
+  if (backend.kind === 'chat') return add('agent', window.GREETING); // prebuilt, not in history: the model call starts with the visitor's message
   showTyping();
   try {
     if (backend.kind === 'chat') await chatTurn();
