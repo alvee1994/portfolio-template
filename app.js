@@ -81,7 +81,11 @@ function turnstileToken() {
 
 async function start() {
   if (!session) session = await api('/session', { token: await turnstileToken() }); // reopen after an error reuses it
-  if (backend.kind === 'chat') return add('agent', window.GREETING); // prebuilt, not in history: the model call starts with the visitor's message
+  if (backend.kind === 'chat') { // prebuilt greeting, no model call
+    add('agent', window.GREETING);
+    history.push({ role: 'assistant', content: window.GREETING }); // the Worker expects the history to start with an assistant turn
+    return;
+  }
   showTyping();
   try {
     if (backend.kind === 'chat') await chatTurn();
