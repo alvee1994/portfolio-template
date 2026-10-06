@@ -106,7 +106,18 @@ Repo Settings > Pages > Source: **GitHub Actions**. Then Actions tab > enable wo
 
 **OpenRouter.** Same steps in `workers/openrouter/`, with `npx wrangler secret put OPENROUTER_API_KEY` (key from openrouter.ai/keys). Add the `openrouter` entry to `config.js`.
 
-**Managed Agent.** Build an agent on platform.claude.com, add your CV as a file, create an environment and a deployment, and copy the deployment id (`depl_...`). Put it in `workers/console-deployment/wrangler.toml` as `DEPLOYMENT_ID`, then deploy as in step 3. Add the `console` entry to `config.js`. This one ignores `profile.txt`: its instructions live on the agent.
+**Managed Agent.** Build an agent on platform.claude.com, add your CV as a file, create an environment and a deployment, and copy the deployment id (`depl_...`). Put it in `workers/console-deployment/wrangler.toml` as `DEPLOYMENT_ID`, then deploy as in step 3. Add the `console` entry to `config.js`. This one ignores `profile.txt`: its instructions live on the agent. Start from `workers/console-deployment/system-prompt.example.txt`: fill it in and paste it as the agent's system prompt.
+
+**Calendar booking (Managed Agent only).** Connect the Google Calendar MCP server on the agent and set its tool permissions:
+
+| Tool | Permission |
+|---|---|
+| `create_event` | Allow |
+| free/busy or suggest-time tool, if listed | Allow |
+| `list_events`, `get_event`, `search_events` | Deny (they show your existing meetings) |
+| `list_calendars`, `delete_event`, `respond_to_event`, `update_event`, anything else | Deny |
+
+The booking rules in the prompt keep it to one 30-minute event with the visitor as the only attendee. Anyone can type someone else's email, so watch your calendar notifications.
 
 **Change the model** without redeploying: dash.cloudflare.com > Workers & Pages > your Worker > Settings > Variables and Secrets > edit `MODEL` > Deploy. Update `wrangler.toml` too, or the next `wrangler deploy` puts the old value back.
 
