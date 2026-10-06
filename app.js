@@ -2,7 +2,7 @@ const $ = id => document.getElementById(id);
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 // Back ends from config.js. "session" = Managed Agent deployment (start a run, poll events).
 // "chat" = stateless Worker (Messages API or OpenRouter): the page keeps the history and posts it each turn.
-const BACKENDS = window.BACKENDS.filter(b => !b.disabled);
+const BACKENDS = window.BACKENDS.filter(b => !b.disabled); // only these are ever called; disabled ones show greyed out in the switch
 let backend = BACKENDS[0];
 let session = null; // signed ticket { sid, exp, sig } from the Worker
 let history = [];   // chat back ends only: assistant, user, assistant, ...
@@ -138,9 +138,14 @@ function openChat() {
 $('launch').addEventListener('click', openChat);
 
 // Switching back end starts a fresh conversation (and a fresh bot check).
-if (BACKENDS.length > 1) {
+if (window.BACKENDS.length > 1) {
   const pick = $('backend');
-  for (const b of BACKENDS) pick.append(new Option(b.label, b.id));
+  for (const b of window.BACKENDS) {
+    const o = new Option(b.label, b.id);
+    o.disabled = !!b.disabled; // greyed out, cannot be picked
+    pick.append(o);
+  }
+  pick.value = backend.id;
   pick.hidden = false;
   pick.addEventListener('change', () => {
     backend = BACKENDS.find(b => b.id === pick.value);

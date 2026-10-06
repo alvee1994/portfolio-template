@@ -1,7 +1,7 @@
 // Public settings for the page. Never put a secret here: everyone can read this file.
 
 // CHANGE: your Worker addresses, printed by `npx wrangler deploy`. No trailing slash.
-// The first enabled entry is the default. disabled: true hides an entry but keeps its Worker.
+// The first enabled entry is the default. disabled: true shows the entry greyed out in the switch; the page never calls its Worker.
 // Keep one entry to hide the switch. kind: "session" = Managed Agent deployment, "chat" = Messages API or OpenRouter.
 window.BACKENDS = [
   { id: "openrouter", label: "OpenRouter",    kind: "chat",    url: "https://worker-openrouter.<your-subdomain>.workers.dev" },
