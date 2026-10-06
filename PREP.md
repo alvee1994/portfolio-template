@@ -45,10 +45,15 @@ Install **Git** and **Node.js (LTS)**.
 
 </details>
 
+**Log in to GitHub from your laptop** so you can publish. Your GitHub password does not work in the terminal. Pick one:
+
+- **VS Code:** click the account icon (bottom left) and choose **Sign in with GitHub**.
+- **Terminal:** install the GitHub CLI from [cli.github.com](https://cli.github.com), then run `gh auth login` and choose GitHub.com, HTTPS, and log in with a web browser.
+
 
 ## 3. Two text files about you (15 min)
 
-Save both as plain text (`.txt` or `.md`), not Word or PDF.
+Save both as plain text (`.txt` or `.md`), not Word or PDF. Keep them in a normal folder like Documents, not inside a code project.
 
 1. **`cv.txt`**: your CV, copied out of Word or PDF.
 2. **`experience.md`**: the detail your CV leaves out. Ask your AI (ChatGPT, Claude, Gemini) to interview you and write it. You can paste this prompt:

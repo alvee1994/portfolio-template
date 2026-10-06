@@ -13,3 +13,7 @@ node_modules/
 
 # Agent knowledge (CV + experience notes). Copy workers/profile.example.txt to workers/profile.txt
 workers/profile.txt
+
+# Your source notes, in case you save them here. The agent reads them into workers/profile.txt.
+cv.txt
+experience.md
