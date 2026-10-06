@@ -1,0 +1,15 @@
+# Secrets and local tooling
+.dev.vars
+.env
+.wrangler/
+node_modules/
+
+# Your CV and other private documents. The repo is public; the agent already has your CV.
+*.docx
+*.doc
+*.pdf
+*.odt
+*.pages
+
+# Agent knowledge (CV + experience notes). Copy workers/profile.example.txt to workers/profile.txt
+workers/profile.txt

@@ -1,0 +1,27 @@
+name = "worker-claude-console-deployment"
+main = "worker.js"
+compatibility_date = "2025-09-01"
+
+[vars]
+# CHANGE: your GitHub Pages origin. https://<github-username>.github.io, no path, no trailing slash
+ALLOWED_ORIGIN = "https://<github-username>.github.io"
+# CHANGE: your deployment id from platform.claude.com (depl_...). Not a secret.
+DEPLOYMENT_ID = "depl_..."
+
+# Rate limits per visitor IP. Starting a run costs money, so it is strict.
+[[ratelimits]]
+name = "worker-claude-console-deployment"
+namespace_id = "1001"
+simple = { limit = 5, period = 60 }
+
+[[ratelimits]]
+name = "worker-claude-console-deployment"
+namespace_id = "1002"
+simple = { limit = 120, period = 60 }  # the page polls once a second while the agent works
+
+# Secrets (never in this file):
+#   npx wrangler secret put ANTHROPIC_API_KEY
+#   npx wrangler secret put TURNSTILE_SECRET
+#   npx wrangler secret put SIGNING_SECRET     (any long random string: openssl rand -hex 32)
+# Local dev: copy .dev.vars.example to .dev.vars, then: npx wrangler dev
+# (test the API with curl or test.mjs; the page's CSP only talks to *.workers.dev)
