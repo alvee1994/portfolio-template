@@ -33,6 +33,8 @@ You need **one** Worker. The example page runs all three so you can compare them
 | openrouter | about 2 s | `workers/profile.txt` | OpenRouter | under a cent |
 | console-deployment | 10 s or more (starts a session) | files on your Managed Agent | Anthropic | highest |
 
+**Every id in this repo is a placeholder.** You create your own: Worker addresses (`<your-subdomain>`), Turnstile sitekey and secret, page origin (`<github-username>`), and for the Managed Agent your own agent, environment and deployment id (`depl_...`). Ids from the example site belong to another account and do not work for you. Do not copy them.
+
 ## Steps (Claude API Worker)
 
 ### 1. Copy and clone
@@ -106,7 +108,7 @@ Repo Settings > Pages > Source: **GitHub Actions**. Then Actions tab > enable wo
 
 **OpenRouter.** Same steps in `workers/openrouter/`, with `npx wrangler secret put OPENROUTER_API_KEY` (key from openrouter.ai/keys). Add the `openrouter` entry to `config.js`.
 
-**Managed Agent.** Build an agent on platform.claude.com, add your CV as a file, create an environment and a deployment, and copy the deployment id (`depl_...`). Put it in `workers/console-deployment/wrangler.toml` as `DEPLOYMENT_ID`, then deploy as in step 3. Add the `console` entry to `config.js`. This one ignores `profile.txt`: its instructions live on the agent. Start from `workers/console-deployment/system-prompt.example.txt`: fill it in and paste it as the agent's system prompt.
+**Managed Agent.** In your own Claude Console account, build an agent on platform.claude.com, add your CV as a file, create an environment and a deployment, and copy the deployment id (`depl_...`). Agent, environment and deployment ids are per account, so you always make your own. Put it in `workers/console-deployment/wrangler.toml` as `DEPLOYMENT_ID`, then deploy as in step 3. Add the `console` entry to `config.js`. This one ignores `profile.txt`: its instructions live on the agent. Start from `workers/console-deployment/system-prompt.example.txt`: fill it in and paste it as the agent's system prompt.
 
 **Calendar booking (Managed Agent only).** Connect the Google Calendar MCP server on the agent and set its tool permissions:
 

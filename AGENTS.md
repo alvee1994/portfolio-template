@@ -9,6 +9,7 @@ Read README.md for the full architecture, security notes and troubleshooting tab
 - The repo is public. Never commit a CV, `workers/profile.txt`, `.dev.vars`, or any key.
 - API keys go into Cloudflare only, with `npx wrangler secret put <NAME>`. The student pastes the key into the terminal prompt themselves. Never ask them to paste a key into the chat, and never write it to a file.
 - `config.js` is public. Only Worker URLs, the Turnstile sitekey and the greeting go there.
+- Every id in the repo is a placeholder (`depl_...`, `<github-username>`, `<your-subdomain>`, the Turnstile test sitekey). The student creates their own in their own accounts: Worker address, Turnstile widget, and for the Managed Agent their own agent, environment and deployment. Never reuse ids from alvee1994.github.io or invent one. If a value is missing, ask the student or read it from their Cloudflare or Console account.
 - Keep the ids `ask`, `launch` and `panel` in `index.html`, and keep the Content-Security-Policy meta tag.
 - Insert text with `textContent`, never `innerHTML`.
 - Do not touch `app.js` or the Worker code unless the student asks.
