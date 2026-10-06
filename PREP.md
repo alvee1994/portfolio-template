@@ -136,7 +136,7 @@ Paste this into your assistant. It tests the exact thing you do on the day: crea
 
 You are ready when the link opens your new repo on GitHub and it names your Cloudflare account.
 
-**Bring:** charged laptop, your logins, the Claude Console login from Alvee, and your `prompt.txt`.
+**Bring:** your logins, the Claude Console login from Alvee, and your `prompt.txt`.
 
 **Stuck?** Bring your laptop and questions to JB-50 30 mins earlier at 10:30 and we will help you set it up!
 
