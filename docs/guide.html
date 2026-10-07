@@ -219,10 +219,10 @@
     <tr><td class="n">01</td><td>Create accounts</td><td class="t">15 min</td><td class="b"><div class="bar" style="width:33%"></div></td><td>You can log in to GitHub, Cloudflare and OpenRouter</td></tr>
     <tr><td class="n">02</td><td>Pick your AI assistant</td><td class="t">10 min</td><td class="b"><div class="bar" style="width:22%"></div></td><td>It starts on your laptop</td></tr>
     <tr><td class="n">03</td><td>Let it set up the laptop</td><td class="t">15 min</td><td class="b"><div class="bar" style="width:33%"></div></td><td>Git, Node.js and GitHub are ready</td></tr>
-    <tr><td class="n">04</td><td>Connect it to Cloudflare</td><td class="t">5 min</td><td class="b"><div class="bar" style="width:11%"></div></td><td>It names your Cloudflare account</td></tr>
+    <tr><td class="n">04</td><td>Connect it to Cloudflare</td><td class="t">10 min</td><td class="b"><div class="bar" style="width:22%"></div></td><td>It names your account, and <code>wrangler whoami</code> works</td></tr>
     <tr><td class="n">05</td><td><b>Write about yourself</b></td><td class="t">45 min</td><td class="b"><div class="bar" style="width:100%;opacity:1"></div></td><td><code>prompt.txt</code> is saved</td></tr>
     <tr><td class="n">06</td><td>Set up OpenRouter</td><td class="t">15 min</td><td class="b"><div class="bar" style="width:33%"></div></td><td>$5 credit, ZDR on, key with a $5 limit</td></tr>
-    <tr><td class="n">07</td><td>Build it</td><td class="t">20 min</td><td class="b"><div class="bar" style="width:44%"></div></td><td>Your page is live</td></tr>
+    <tr><td class="n">07</td><td>Copy the template, then build</td><td class="t">20 min</td><td class="b"><div class="bar" style="width:44%"></div></td><td>Your page is live</td></tr>
     <tr><td class="n">08</td><td>Try it and share it</td><td class="t">5 min</td><td class="b"><div class="bar" style="width:11%"></div></td><td>The agent answers about you</td></tr>
   </table>
 
@@ -301,7 +301,7 @@
   <p class="muted small">Approve each step it asks about. If it gets stuck, paste the error back and ask it to fix it.</p>
 
   <hr class="rule">
-  <div class="stephead"><div class="stepnum">04</div><div><div class="eyebrow">Step 4 &nbsp;·&nbsp; 5 min</div><h2>Connect your assistant to Cloudflare</h2></div></div>
+  <div class="stephead"><div class="stepnum">04</div><div><div class="eyebrow">Step 4 &nbsp;·&nbsp; 10 min</div><h2>Connect your assistant to Cloudflare</h2></div></div>
   <div class="done"><small>Done when</small>You ask "List my Cloudflare account name." and it names your account.</div>
   <p>This lets your assistant set up Cloudflare for you, including the bot check. Without it, you would click through the Cloudflare dashboard yourself.</p>
   <div class="grid2">
@@ -333,6 +333,38 @@ codex mcp login cloudflare</div>
   <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>5</span></div>
 </section>
 
+<!-- STEP 4b: WRANGLER LOGIN -->
+<section class="page">
+  <div class="runhead"><span>Portfolio agent</span><span>Part 1 &nbsp;·&nbsp; Prepare</span></div>
+  <div class="sub" style="margin-top:0"><span>Step 4, part 2</span>Log in to Cloudflare for publishing</div>
+  <div class="done"><small>Done when</small><span><code>npx wrangler whoami</code> shows your email and account.</span></div>
+  <div class="warn" style="margin-top:0">
+    <div class="eyebrow">You do this one yourself</div>
+    Publishing your Worker uses a second Cloudflare login, through a tool called Wrangler. It waits for you to click a button in your browser, so your assistant cannot do it for you. Do it once now.
+  </div>
+
+  <h3 style="margin-top:6mm">1. Open a terminal</h3>
+  <div class="grid2">
+    <div class="opt"><h3>Mac</h3><div class="who">Press <code>Cmd + Space</code>, type <code>Terminal</code>, press Enter.</div></div>
+    <div class="opt"><h3>Windows</h3><div class="who">Press the Windows key, type <code>PowerShell</code>, press Enter.</div></div>
+    <div class="opt"><h3>Claude desktop app</h3><div class="who">Click <b>Terminal</b> at the top of your session, or press <code>Ctrl + `</code>.</div></div>
+    <div class="opt"><h3>Antigravity IDE</h3><div class="who">Menu <b>Terminal &gt; New Terminal</b>.</div></div>
+  </div>
+
+  <h3 style="margin-top:6mm">2. Run the login</h3>
+  <div class="term" data-label="Type this, then press Enter">npx wrangler login</div>
+  <ol class="num">
+    <li>If it asks <code>Ok to proceed? (y)</code>, type <code>y</code> and press Enter.</li>
+    <li>Your browser opens a Cloudflare page. Log in if asked, then click <b>Allow</b>.</li>
+    <li>The terminal says you are logged in. You can close it.</li>
+  </ol>
+
+  <h3 style="margin-top:6mm">3. Check it</h3>
+  <div class="term" data-label="Type this, then press Enter">npx wrangler whoami</div>
+  <p>It shows your email and your Cloudflare account. If your assistant later says Wrangler is not logged in, do these three steps again and tell it "done".</p>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>6</span></div>
+</section>
+
 <!-- STEP 5 -->
 <section class="page">
   <div class="runhead"><span>Portfolio agent</span><span>Part 1 &nbsp;·&nbsp; Prepare</span></div>
@@ -360,7 +392,7 @@ codex mcp login cloudflare</div>
     <div class="eyebrow">Leave out anything private</div>
     Strangers will read what your agent says, and this text goes to an AI provider with every question. No phone number, home address, salary, health details or other people's names.
   </div>
-  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>6</span></div>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>7</span></div>
 </section>
 
 <!-- STEP 6: credit, privacy, key -->
@@ -386,7 +418,7 @@ codex mcp login cloudflare</div>
   </ol>
   <img class="shot" src="openrouter-privacy.png" alt="OpenRouter Model and Provider Access page with Zero Data Retention on and Data Training off" style="width:68%">
   <p class="small muted" style="margin-top:3mm"><b>Prompt logging</b> is off by default. Leave it off, even for the 1% discount. OpenRouter then keeps only time, model and token counts, not the text.</p>
-  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>7</span></div>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>8</span></div>
 </section>
 
 <section class="page">
@@ -415,7 +447,7 @@ codex mcp login cloudflare</div>
       <li>You know your model id, or you keep the default <code>openai/gpt-6-luna</code></li>
     </ul>
   </div>
-  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>8</span></div>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>9</span></div>
 </section>
 
 <!-- STEP 6.4: model -->
@@ -458,27 +490,49 @@ codex mcp login cloudflare</div>
     <div class="aside" style="grid-template-columns:1fr;margin:0"><div><small>What a question costs</small>Each question sends your whole <code>prompt.txt</code> and the chat so far, about 6,000 tokens, and gets about 200 back. With GPT-6 Luna that is under a tenth of a cent. $5 covers roughly 5,000 questions.</div></div>
     <div class="aside" style="grid-template-columns:1fr;margin:0"><div><small>Test before you pick</small>Open <a href="https://openrouter.ai/chat">openrouter.ai/chat</a>, add one or two models, paste your <code>prompt.txt</code> as the system prompt. Ask what a recruiter would ask, and "What is their phone number?" (it should refuse).</div></div>
   </div>
-  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>9</span></div>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>10</span></div>
 </section>
 
-<!-- STEP 7 + 8 -->
+<!-- STEP 7.1 -->
 <section class="page">
   <div class="runhead"><span>Portfolio agent</span><span>Part 2 &nbsp;·&nbsp; Build</span></div>
   <div class="stephead"><div class="stepnum">07</div><div><div class="eyebrow">Step 7 &nbsp;·&nbsp; 20 min</div><h2>Build it</h2></div></div>
   <div class="done"><small>Done when</small>Your assistant says the page is published.</div>
+  <div class="sub" style="margin-top:0"><span>7.1</span>Make your own copy on GitHub</div>
+  <p>Your page needs its own repo on your GitHub account. You copy it from the template in two clicks.</p>
+  <ol class="num">
+    <li>Open <a href="https://github.com/alvee1994/portfolio-template">github.com/alvee1994/portfolio-template</a> while logged in to GitHub.</li>
+    <li>Click the green <b>Use this template</b> button, then <b>Create a new repository</b>.</li>
+  </ol>
+  <img class="shot" src="github-use-template.png" alt="The Use this template button opened, with Create a new repository highlighted" style="width:62%">
+  <ol class="num" start="3" style="margin-top:3mm">
+    <li><b>Repository name:</b> <code>portfolio</code>. This becomes your address, <code>&lt;username&gt;.github.io/portfolio</code>.</li>
+    <li><b>Include all branches:</b> leave it <b>Off</b>.</li>
+    <li><b>Choose visibility: Public.</b> Your page must be public, or nobody on the internet can open it and chat with your agent. Your CV and key never go into the repo.</li>
+    <li>Click <b>Create repository</b>.</li>
+  </ol>
+  <img class="shot" src="github-create-repo.png" alt="The Create a new repository form with the template selected and visibility Public" style="width:58%">
+  <p class="cap">The screenshot shows another name. Use <code>portfolio</code>, or any name you like: the address then ends in that name.</p>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>11</span></div>
+</section>
+
+<!-- STEP 7.2 + 8 -->
+<section class="page">
+  <div class="runhead"><span>Portfolio agent</span><span>Part 2 &nbsp;·&nbsp; Build</span></div>
+  <div class="sub" style="margin-top:0"><span>7.2</span>Let your assistant build it</div>
   <p>Start your assistant in your Documents folder:</p>
   <ul class="clean small">
     <li><b>Claude desktop app:</b> Code tab, <b>+ New session</b>, <b>Environment: Local</b>, project folder <b>Documents</b>.</li>
     <li><b>Terminal (Claude Code or Codex):</b> open a new terminal, type <code>cd Documents</code>, then <code>claude</code> or <code>codex</code>.</li>
     <li><b>Antigravity:</b> File &gt; Open Folder &gt; Documents.</li>
   </ul>
-  <p style="margin-top:3mm">Then paste this. Change the model id if you picked another one:</p>
-  <div class="paste" data-label="Paste this into your assistant">Create my own public repo called portfolio from the template alvee1994/portfolio-template with <code>gh repo create portfolio --template alvee1994/portfolio-template --public --clone</code>. Then read AGENTS.md in it and follow it to build my portfolio. My prompt.txt is in my Documents folder. Use the OpenRouter model openai/gpt-6-luna.</div>
+  <p style="margin-top:3mm">Then paste this. Change the repo name or model id if yours differ:</p>
+  <div class="paste" data-label="Paste this into your assistant">Clone my GitHub repository called portfolio into this folder. Then read AGENTS.md in it and follow it to build my portfolio. My prompt.txt is in my Documents folder. Use the OpenRouter model openai/gpt-6-luna.</div>
 
   <div class="eyebrow" style="margin-top:4mm">You do three things when it asks</div>
   <div class="say">
     <div><div class="big">1</div><span class="h">Paste your key</span>It opens a file called <code>.dev.vars</code>. Paste your key right after <code>OPENROUTER_API_KEY=</code>, no spaces. Save, close.</div>
-    <div><div class="big">2</div><span class="h">Allow Cloudflare</span>A browser opens for the Cloudflare login. Click <b>Allow</b>.</div>
+    <div><div class="big">2</div><span class="h">Wrangler, if asked</span>Only if you skipped step 4, part 2 or it expired. Do the login there, then tell it "done".</div>
     <div><div class="big">3</div><span class="h">Approve</span>Read what it proposes before it acts. Say no if something looks wrong.</div>
   </div>
   <p class="muted small">The assistant checks the key line is filled in without reading your key. The key never goes into the chat or to GitHub.</p>
@@ -492,7 +546,7 @@ codex mcp login cloudflare</div>
     <li>The page has no typos and your contact details are right</li>
   </ul>
   <p style="margin-top:3mm">Then put the link on your LinkedIn, CV and email signature.</p>
-  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>10</span></div>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>12</span></div>
 </section>
 
 <!-- KEEP IT RUNNING -->
@@ -526,7 +580,7 @@ codex mcp login cloudflare</div>
   </table>
   <p class="small" style="margin-top:3mm">ZDR is enforced twice: in your OpenRouter guardrail (6.2) and by the Worker on every request. A model with no ZDR provider makes the agent stop, rather than fall back to one that keeps data.</p>
 
-  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>11</span></div>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>13</span></div>
 </section>
 
 <!-- TROUBLESHOOTING + SAFETY -->
@@ -557,7 +611,7 @@ codex mcp login cloudflare</div>
     <div><small>Turn it off</small>Delete the key on the OpenRouter API Keys page. The page stays up, the chat shows an error. To remove everything: delete <code>worker-openrouter</code> in Cloudflare and the <code>portfolio</code> repo on GitHub.</div>
     <div><small>Full guide</small>Every step, with more detail: <a href="https://github.com/alvee1994/portfolio-template/blob/main/GUIDE.md">GUIDE.md</a> in the template repo.</div>
   </div>
-  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>12</span></div>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>14</span></div>
 </section>
 
 </body>

@@ -77,7 +77,7 @@ Start your assistant. In the Claude desktop app: Code tab, **+ New session**, se
 
 Approve each step it asks about. If it gets stuck, paste the error back and ask it to fix it.
 
-## 4. Connect your assistant to Cloudflare (5 min)
+## 4. Connect your assistant to Cloudflare (10 min)
 
 This lets your assistant set up Cloudflare for you, including the bot check. Without it, you would click through the Cloudflare dashboard yourself.
 
@@ -106,6 +106,25 @@ codex mcp login cloudflare
 ```
 
 A browser opens. Sign in to Cloudflare and approve. Then ask your assistant "List my Cloudflare account name." If it names your account, you are connected.
+
+### Log in to Cloudflare for publishing (you do this one yourself)
+
+Publishing your Worker uses a second Cloudflare login, through a tool called Wrangler. It waits for you to click a button in your browser, so your assistant cannot do it for you. Do it once now:
+
+1. **Open a terminal.** Any of these works:
+   - Mac: press Cmd + Space, type `Terminal`, press Enter.
+   - Windows: press the Windows key, type `PowerShell`, press Enter.
+   - Claude desktop app: click **Terminal** at the top of your session, or press Ctrl + \`.
+   - Antigravity: menu **Terminal > New Terminal**.
+2. **Type this and press Enter:**
+   ```
+   npx wrangler login
+   ```
+3. If it asks `Ok to proceed? (y)`, type `y` and press Enter.
+4. **Your browser opens a Cloudflare page.** Log in if asked, then click **Allow**.
+5. The terminal says you are logged in. You can close it.
+
+Check: in the same terminal, `npx wrangler whoami` shows your email and account.
 
 ## 5. Write about yourself (45 min, the most important step)
 
@@ -233,19 +252,39 @@ Prices change. The table on the Models page has today's numbers.
 
 ## 7. Build it (20 min)
 
+### 7.1 Make your own copy on GitHub
+
+Your page needs its own repo on your GitHub account. You copy it from the template in two clicks.
+
+1. Open [github.com/alvee1994/portfolio-template](https://github.com/alvee1994/portfolio-template) while logged in to GitHub.
+2. Click the green **Use this template** button at the top right, then **Create a new repository**.
+
+   ![The Use this template button opened, with Create a new repository highlighted](docs/github-use-template.png)
+
+3. Fill in the form:
+   - **Owner:** your GitHub username.
+   - **Repository name:** `portfolio`. This becomes your address: `<username>.github.io/portfolio`. Another name works too, the address then ends in that name.
+   - **Include all branches:** leave it **Off**.
+   - **Choose visibility:** **Public**. Your page must be public, or nobody on the internet can open it and chat with your agent. Your CV and key never go into the repo, so nothing private is exposed.
+4. Click **Create repository**.
+
+   ![The Create a new repository form, with the template selected and visibility set to Public](docs/github-create-repo.png)
+
+### 7.2 Let your assistant build it
+
 Start your assistant in your Documents folder:
 
 - **Claude desktop app:** Code tab, **+ New session**, **Environment: Local**, project folder **Documents**.
 - **Terminal (Claude Code or Codex):** open a new terminal, type `cd Documents`, then `claude` or `codex`.
 - **Antigravity:** File > Open Folder > Documents.
 
-Then paste this. Change the model id if you picked another one in 6.4:
+Then paste this. Change the repo name or model id if yours differ:
 
-> Create my own public repo called portfolio from the template alvee1994/portfolio-template with `gh repo create portfolio --template alvee1994/portfolio-template --public --clone`. Then read AGENTS.md in it and follow it to build my portfolio. My prompt.txt is in my Documents folder. Use the OpenRouter model openai/gpt-6-luna.
+> Clone my GitHub repository called portfolio into this folder. Then read AGENTS.md in it and follow it to build my portfolio. My prompt.txt is in my Documents folder. Use the OpenRouter model openai/gpt-6-luna.
 
 What the assistant does on its own:
 
-- Copies the template into your GitHub account and onto your laptop.
+- Downloads your repo onto your laptop.
 - Writes your page from your CV.
 - Turns your `prompt.txt` into your agent's knowledge, kept private and never sent to GitHub.
 - Sets up Cloudflare: your Worker address, the bot check, and the secrets.
@@ -254,7 +293,7 @@ What the assistant does on its own:
 What you do when it asks:
 
 1. **Paste your key.** It opens a file called `.dev.vars`. Paste your OpenRouter key right after `OPENROUTER_API_KEY=`, with no spaces, then save and close. The assistant checks the line is filled in without reading the key.
-2. **Allow Cloudflare.** A browser opens for the Cloudflare login. Click **Allow**.
+2. **Log in to Wrangler,** only if you skipped it in step 4 or it has expired. The assistant tells you. Follow "Log in to Cloudflare for publishing" in step 4, then tell the assistant "done".
 3. **Approve** the steps it shows you. Read what it proposes. Say no if something looks wrong.
 
 ## 8. Try it and share it

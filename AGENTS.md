@@ -22,20 +22,32 @@ Run `git --version`, `node --version` and `gh auth status`. If one is missing, i
 
 Check the Cloudflare MCP by fetching the student's accounts. If it is not connected, give the student the connect steps from GUIDE.md step 4 and wait. If they cannot connect it, use the manual fallback at the end of this file.
 
+Check Wrangler with `npx wrangler whoami`. **Never run `npx wrangler login` yourself:** it waits for a click in the student's browser, and inside an agent shell it hangs or is blocked. If whoami says not logged in, stop and give the student exactly this, then wait for "done" and run whoami again:
+
+> Wrangler needs you to log in to Cloudflare once. Please:
+> 1. Open a terminal: on Mac, Cmd + Space, type Terminal, Enter. On Windows, Windows key, type PowerShell, Enter. (In the Claude desktop app you can click Terminal at the top of this session. In Antigravity, Terminal > New Terminal.)
+> 2. Type `npx wrangler login` and press Enter. If it asks "Ok to proceed? (y)", type y and press Enter.
+> 3. Your browser opens a Cloudflare page. Log in if asked, then click Allow.
+> 4. When the terminal says you are logged in, come back here and type "done".
+
 ## 1. Repo
 
 Get the username with `gh api user -q .login`. Do not ask for it. Below, `<username>` is that login **in lowercase** wherever it is part of an address: browsers send the page origin in lowercase, so `ALLOWED_ORIGIN`, the Turnstile domain and the page link must be lowercase. The page origin is `https://<username>.github.io`.
 
 The student may be on Windows (PowerShell). Prefer `node -e` over `grep`, `curl` or shell redirection, and write files with your file tool, not `>` or `>>`.
 
-If the current folder is not the student's own copy, create it from the template and move into it:
+The student normally creates their copy on github.com first (GUIDE.md step 7.1: **Use this template > Create a new repository**, name `portfolio`, Public). Check it:
 
 ```
-gh repo create portfolio --template alvee1994/portfolio-template --public --clone
-cd portfolio
+gh repo view portfolio --json name,visibility,url
 ```
 
-If `portfolio` already exists on their account, ask before reusing or renaming.
+- **It exists:** clone it with `gh repo clone portfolio` and move into it. If it is private, explain that the page must be public for visitors to reach it, ask, then `gh repo edit portfolio --visibility public --accept-visibility-change-consequences`.
+- **It does not exist:** create it from the template, after telling the student:
+  ```
+  gh repo create portfolio --template alvee1994/portfolio-template --public --clone
+  ```
+- **They used another name:** use that name everywhere below. The page is then at `https://<username>.github.io/<repo name>/`. `ALLOWED_ORIGIN` stays `https://<username>.github.io`.
 
 ## 2. Ask the student
 
@@ -95,11 +107,10 @@ It must print `true`. If not, ask them to check the line again.
 In `workers/openrouter/wrangler.toml`, set `ALLOWED_ORIGIN = "https://<username>.github.io"` (no path, no trailing slash) and `MODEL` to the chosen model id. Then from `workers/openrouter/`:
 
 ```
-npx wrangler login
 npx wrangler deploy --secrets-file .dev.vars
 ```
 
-`login` opens a browser. The student clicks **Allow**. `deploy` uploads the Worker and all three secrets at once. Check the printed address matches step 5.
+It uploads the Worker and all three secrets at once. Check the printed address matches step 5. If it says you are not logged in, give the student the Wrangler login steps from step 0 and wait.
 
 ## 8. config.js
 
@@ -110,7 +121,7 @@ Set `WORKER_URL` to the Worker address. Set `TURNSTILE_SITEKEY` to the sitekey. 
 From the repo root: `git status` (no private files), then commit and push to `main`. Turn on Pages and run the deploy once:
 
 ```
-gh api -X POST repos/<username>/portfolio/pages -f build_type=workflow
+gh api -X POST repos/<username>/<repo name>/pages -f build_type=workflow
 gh workflow run "Deploy page"
 ```
 
@@ -118,7 +129,7 @@ A 409 from the first command means Pages is already on. Check once with `gh run 
 
 ## 10. Test
 
-Ask the student to open `https://<username>.github.io/portfolio/`, click "Ask my agent" and ask about one achievement. If it fails, match the error to the troubleshooting table in README.md, and run `npx wrangler tail` in `workers/openrouter/` while they retry. A new workers.dev subdomain can take a few minutes before it answers.
+Ask the student to open `https://<username>.github.io/<repo name>/`, click "Ask my agent" and ask about one achievement. If it fails, match the error to the troubleshooting table in README.md, and run `npx wrangler tail` in `workers/openrouter/` while they retry. A new workers.dev subdomain can take a few minutes before it answers.
 
 ## Later changes
 
