@@ -1,4 +1,4 @@
-# Publishes the repo root to GitHub Pages as plain static files on every push to main.
+# Publishes the page files to GitHub Pages on every push to main.
 name: Deploy page
 on:
   push:
@@ -21,8 +21,13 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      # Publish only the page. Guides, agent notes and Worker code stay out of search results.
+      - run: |
+          mkdir _site
+          cp index.html app.js config.js ribbon.js llms.txt sitemap.xml .nojekyll _site/
+          if [ -d assets ]; then cp -r assets _site/; fi
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: _site
       - id: deployment
         uses: actions/deploy-pages@v4

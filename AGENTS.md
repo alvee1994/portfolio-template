@@ -68,6 +68,15 @@ Copy `workers/profile.example.txt` to `workers/profile.txt`. Replace `<Your Name
 
 Fill `index.html` from the CV: `<title>`, meta description, the top bar name and initial, the tag, the headline (three short phrases), one-line summary, three results with numbers, experience, skills, education, contact. Keep the structure and classes. Plain, short sentences.
 
+Then make the page easy to find for search engines and AI assistants (SEO and GEO). Use only facts from the CV, nothing from `<additional details>` that the student would not put on the page:
+
+- **Head of `index.html`:** fill every placeholder in the block under the `CHANGE: search and AI visibility` comment: title (`Name | Role`), a 150 to 160 character description that names the person, role and focus, canonical and `og:url` (`https://<username>.github.io/<repo name>/`, lowercase), Open Graph text, and the JSON-LD (`jobTitle`, `description`, `sameAs` with their real LinkedIn and GitHub, `alumniOf`, `knowsAbout` from the skills). Remove a `sameAs` entry they do not have. Keep the JSON valid.
+- **`llms.txt`:** a plain markdown summary of the page for AI tools: name, one-line summary, results, experience, education, skills, links. Same facts as the page, no private details.
+- **`sitemap.xml`:** the page URL and today's date as `lastmod`.
+- **Photo (optional):** if the student wants one in link previews, save it as `assets/photo.jpg` (square, at least 300 px) and add `<meta property="og:image" content="https://<username>.github.io/<repo name>/assets/photo.jpg">`.
+
+The Pages workflow publishes only `index.html`, `app.js`, `config.js`, `ribbon.js`, `llms.txt`, `sitemap.xml` and `assets/`. A new file the page needs must be added to the `cp` line in `.github/workflows/pages.yml`.
+
 ## 5. Cloudflare, through the MCP
 
 Use the Cloudflare MCP for all of this. Use the account id from step 0.

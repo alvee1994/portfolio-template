@@ -285,7 +285,7 @@ Then paste this. Change the repo name or model id if yours differ:
 What the assistant does on its own:
 
 - Downloads your repo onto your laptop.
-- Writes your page from your CV.
+- Writes your page from your CV, set up so search engines and AI assistants like ChatGPT can find and describe you.
 - Turns your `prompt.txt` into your agent's knowledge, kept private and never sent to GitHub.
 - Sets up Cloudflare: your Worker address, the bot check, and the secrets.
 - Publishes the page on GitHub Pages.
