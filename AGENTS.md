@@ -7,6 +7,7 @@ The student-facing walkthrough is GUIDE.md. README.md has the architecture, secu
 ## Ground rules
 
 - The repo is public. Never commit a CV, `prompt.txt`, `workers/profile.txt`, `.dev.vars`, or any key.
+- Never copy `prompt.txt` or any CV file into the repo folder, not even for a moment. Read it where the student keeps it (usually Documents). The only place its content goes is `workers/profile.txt`, which is gitignored and reaches Cloudflare only inside the Worker when you deploy. Before every commit, run `git status` and stop if `prompt.txt`, a CV, `workers/profile.txt` or `.dev.vars` is listed.
 - The student's OpenRouter key goes only into `workers/openrouter/.dev.vars` (gitignored), which the student fills in themselves. Never ask for the key in the chat. Never print, cat or read `.dev.vars` after the student has edited it.
 - You create the other secrets yourself (`SIGNING_SECRET`, `TURNSTILE_SECRET`). Never send the student to the Cloudflare dashboard for something the Cloudflare MCP can do.
 - `config.js` is public. Only the Worker URL, the Turnstile sitekey and the greeting go there.
@@ -61,7 +62,7 @@ gh repo view portfolio --json name,visibility,url
 
 ## 3. Knowledge
 
-Copy `workers/profile.example.txt` to `workers/profile.txt`. Replace `<Your Name>` and the pronouns. Paste the `<resume>` text under `# Profile` and the `<additional details>` text under `# Experience repository`. Keep the rules block. Remove phone numbers, home address and anything else private. Confirm `git check-ignore workers/profile.txt` prints the path.
+Copy `workers/profile.example.txt` to `workers/profile.txt`. Replace `<Your Name>` and the pronouns. Paste the `<resume>` text under `# Profile` and the `<additional details>` text under `# Experience repository`. Keep the rules block. Remove phone numbers, home address and anything else private. Confirm `git check-ignore workers/profile.txt` prints the path. Then tell the student in one or two sentences: their `prompt.txt` stays on their laptop and never goes to GitHub; its content is packed into their Worker on Cloudflare, so visitors can only learn those details by asking the agent.
 
 ## 4. Page
 

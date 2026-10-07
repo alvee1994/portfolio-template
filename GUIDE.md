@@ -363,10 +363,36 @@ Paste the full error to your assistant and ask "what went wrong and how do I fix
 - The bot check and a limit per visitor stop people from running up your bill.
 - The $5 credit limit on your key is the hard stop. Never remove it.
 - The agent only talks about your portfolio. It refuses other topics and ignores visitors who try to change its rules.
-- Your repo is public. Never put your CV file or `prompt.txt` in it. The assistant knows this.
+- Your repo is public, but your story is not in it. See below.
 
-## Turn it off
+## Where your prompt.txt lives
 
-- **Stop the agent:** delete the key on [openrouter.ai/workspaces/default/keys](https://openrouter.ai/workspaces/default/keys). The page stays up, and the chat shows an error.
-- **Remove the Worker:** dash.cloudflare.com > **Workers & Pages** > `worker-openrouter` > **Settings** > **Delete**.
-- **Take the page down:** on GitHub, open your `portfolio` repo > **Settings** > **Pages** and turn it off, or delete the repo.
+Your repo on GitHub is public. Your `prompt.txt` is not in it, and never will be.
+
+- `prompt.txt` stays in your Documents folder. The assistant reads it there and never copies it into the repo.
+- The assistant puts its text into `workers/profile.txt` on your laptop. Git ignores that file, so it never goes to GitHub either.
+- When the assistant deploys your Worker, `profile.txt` is packed inside it on Cloudflare. That is how your agent knows about you.
+
+So anyone can see your page and its code, but not your notes. The only way for a visitor to learn more about you is to ask your agent. The agent can quote anything you wrote, so private details still stay out.
+
+Keep `prompt.txt` somewhere safe. It is your own copy. If you change laptop, take it with you.
+
+## Pause or clean up
+
+Most of the time you do not need to delete anything. Find your situation:
+
+| Situation | What to do |
+|---|---|
+| You want to change the page, the knowledge or the model | Ask your assistant (see "Change things"). Do not delete anything |
+| You worry about cost | Nothing to do. The $5 limit on your key stops all spending. The Worker, GitHub Pages and the bot check are free |
+| Your credit ran out | The chat shows an error, nothing else breaks. Add credit when you want it back |
+| You want the agent off for a while, but keep the page | Delete the key on [openrouter.ai/workspaces/default/keys](https://openrouter.ai/workspaces/default/keys) (the **⋮** menu on its row). Keep the Worker. Later, make a new key and ask your assistant to put it in |
+| You are done with the portfolio for good | Clean up everything, in the order below |
+
+**Clean up everything** (only when you are done for good):
+
+1. **OpenRouter key:** on the API Keys page, **⋮** on your `portfolio` key > **Delete**. Nothing can spend your credit after this.
+2. **Cloudflare Worker:** [dash.cloudflare.com](https://dash.cloudflare.com) > **Workers & Pages** > `worker-openrouter` > **Settings** > at the bottom, **Delete**. The chat on your page stops working.
+3. **Cloudflare bot check (optional):** **Turnstile** in the Cloudflare menu > your `portfolio` widget > **Delete**.
+4. **GitHub repo:** your `portfolio` repo > **Settings** > **General** > at the bottom, **Delete this repository**. Your page goes offline. This cannot be undone.
+5. **Your laptop:** delete the `portfolio` folder in Documents. It holds `.dev.vars` with your key and `profile.txt` with your story.

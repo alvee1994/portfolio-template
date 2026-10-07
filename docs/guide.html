@@ -604,14 +604,52 @@ codex mcp login cloudflare</div>
     <li>The bot check and a limit per visitor stop people from running up your bill.</li>
     <li><b>The $5 credit limit on your key is the hard stop. Never remove it.</b></li>
     <li>The agent only talks about your portfolio. It refuses other topics and ignores visitors who try to change its rules.</li>
-    <li>Your repo is public. Never put your CV file or <code>prompt.txt</code> in it. The assistant knows this.</li>
+    <li>Your repo is public, but your story is not in it. See the next page.</li>
   </ul>
 
-  <div class="aside" style="margin-top:7mm">
-    <div><small>Turn it off</small>Delete the key on the OpenRouter API Keys page. The page stays up, the chat shows an error. To remove everything: delete <code>worker-openrouter</code> in Cloudflare and the <code>portfolio</code> repo on GitHub.</div>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>14</span></div>
+</section>
+
+<!-- PROMPT + CLEAN UP -->
+<section class="page">
+  <div class="runhead"><span>Portfolio agent</span><span>Part 3 &nbsp;·&nbsp; Keep it running</span></div>
+  <h3>Where your prompt.txt lives</h3>
+  <div class="box">
+    <p><b>Your repo on GitHub is public. Your <code>prompt.txt</code> is not in it, and never will be.</b></p>
+    <div class="flow" style="grid-template-columns:repeat(3,1fr);margin-top:2mm">
+      <div><span class="dot">1</span><b>Your laptop</b><code>prompt.txt</code> stays in Documents. The assistant reads it there and never copies it into the repo.</div>
+      <div><span class="dot">2</span><b>profile.txt</b>The assistant puts the text in <code>workers/profile.txt</code>. Git ignores it, so it never goes to GitHub.</div>
+      <div><span class="dot">3</span><b>Your Worker</b>On deploy, <code>profile.txt</code> is packed inside your Worker on Cloudflare. That is how your agent knows you.</div>
+    </div>
+    <p style="margin:4mm 0 0">Anyone can see your page and its code, but not your notes. <b>The only way for a visitor to learn more about you is to ask your agent.</b> It can quote anything you wrote, so private details still stay out. Keep <code>prompt.txt</code> safe: it is your own copy.</p>
+  </div>
+
+  <h3 style="margin-top:7mm">Pause or clean up</h3>
+  <p class="small">Most of the time you do not need to delete anything. Find your situation:</p>
+  <table class="small">
+    <tr><th>Situation</th><th>What to do</th></tr>
+    <tr><td>You want to change the page, knowledge or model</td><td>Ask your assistant. Do not delete anything</td></tr>
+    <tr><td>You worry about cost</td><td>Nothing to do. The $5 key limit stops all spending. The Worker, GitHub Pages and the bot check are free</td></tr>
+    <tr><td>Your credit ran out</td><td>The chat shows an error, nothing else breaks. Add credit when you want it back</td></tr>
+    <tr><td>Agent off for a while, page stays</td><td>Delete the key on the OpenRouter API Keys page. Keep the Worker. Later, make a new key and ask your assistant to put it in</td></tr>
+    <tr><td>Done with the portfolio for good</td><td>Clean up everything, in the order below</td></tr>
+  </table>
+
+  <div class="warn" style="margin-top:6mm">
+    <div class="eyebrow">Clean up everything, only when you are done for good</div>
+    <ol class="num" style="margin:2mm 0 0">
+      <li><b>OpenRouter key:</b> API Keys page, <b>⋮</b> on your <code>portfolio</code> key &gt; <b>Delete</b>. Nothing can spend your credit after this.</li>
+      <li><b>Cloudflare Worker:</b> dash.cloudflare.com &gt; <b>Workers &amp; Pages</b> &gt; <code>worker-openrouter</code> &gt; <b>Settings</b> &gt; at the bottom, <b>Delete</b>. The chat stops working.</li>
+      <li><b>Bot check (optional):</b> <b>Turnstile</b> in the Cloudflare menu &gt; your <code>portfolio</code> widget &gt; <b>Delete</b>.</li>
+      <li><b>GitHub repo:</b> your repo &gt; <b>Settings</b> &gt; <b>General</b> &gt; at the bottom, <b>Delete this repository</b>. The page goes offline. This cannot be undone.</li>
+      <li><b>Your laptop:</b> delete the <code>portfolio</code> folder in Documents. It holds <code>.dev.vars</code> with your key and <code>profile.txt</code>.</li>
+    </ol>
+  </div>
+
+  <div class="aside" style="grid-template-columns:1fr;margin-top:6mm">
     <div><small>Full guide</small>Every step, with more detail: <a href="https://github.com/alvee1994/portfolio-template/blob/main/GUIDE.md">GUIDE.md</a> in the template repo.</div>
   </div>
-  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>14</span></div>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>15</span></div>
 </section>
 
 </body>
