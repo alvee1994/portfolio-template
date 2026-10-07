@@ -92,7 +92,6 @@
   #panel header { display:flex; justify-content:space-between; align-items:center; font:500 .75rem var(--mono); letter-spacing:.1em; text-transform:uppercase; padding-bottom:.75rem; border-bottom:1px solid var(--line); }
   #panel header button { width:1.75rem; height:1.75rem; background:none; border:1px solid var(--line); color:var(--ink); font:.8rem var(--mono); cursor:pointer; }
   #panel header button:hover { border-color:var(--ink); }
-  #backend { font:.75rem var(--mono); border:1px solid var(--line); border-radius:0; padding:.3rem .5rem; margin-left:auto; margin-right:.5rem; background:var(--bg); color:var(--ink); }
   #log { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:.5rem; padding:.25rem 0; }
   .msg { padding:.6rem .85rem; white-space:pre-wrap; max-width:85%; font-size:.9375rem; line-height:1.45; }
   .user { background:var(--ink); color:#fff; align-self:flex-end; }
@@ -199,7 +198,7 @@
 <!-- Chat widget. Works as is; app.js drives it. -->
 <button id="launch" class="btn">Ask my agent</button>
 <section id="panel" aria-label="Chat">
-  <header><span>Ask about me</span><select id="backend" hidden aria-label="Agent back end"></select><button id="close" aria-label="Close">&#x2715;</button></header>
+  <header><span>Ask about me</span><button id="close" aria-label="Close">&#x2715;</button></header>
   <div id="log"></div>
   <div id="ts"></div>
   <form id="form">
@@ -207,8 +206,8 @@
     <button id="go" class="btn">Send</button>
   </form>
 </section>
-<script src="config.js?v=5"></script>
-<script src="app.js?v=6"></script>
+<script src="config.js?v=6"></script>
+<script src="app.js?v=7"></script>
 <script src="ribbon.js?v=1"></script>
 </body>
 </html>

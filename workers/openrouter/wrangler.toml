@@ -5,7 +5,7 @@ compatibility_date = "2025-09-01"
 [vars]
 # CHANGE: your GitHub Pages origin. https://<github-username>.github.io, no path, no trailing slash
 ALLOWED_ORIGIN = "https://<github-username>.github.io"
-MODEL = "deepseek/deepseek-v3.2"  # any id from openrouter.ai/models
+MODEL = "openai/gpt-6-luna"  # an OpenRouter model id with zero data retention providers. See GUIDE.md, "Choose a model"
 
 # Rate limits per visitor IP. namespace_id must differ from your other Workers.
 [[ratelimits]]
@@ -18,8 +18,6 @@ name = "MSG_LIMIT"
 namespace_id = "1006"
 simple = { limit = 20, period = 60 }  # one call per message, no polling
 
-# Secrets (never in this file):
-#   npx wrangler secret put OPENROUTER_API_KEY
-#   npx wrangler secret put TURNSTILE_SECRET
-#   openssl rand -hex 32 | npx wrangler secret put SIGNING_SECRET
+# Secrets (never in this file): OPENROUTER_API_KEY, TURNSTILE_SECRET, SIGNING_SECRET.
+# They live in .dev.vars (gitignored) and go up with: npx wrangler deploy --secrets-file .dev.vars
 # Knowledge: copy ../profile.example.txt to ../profile.txt and fill it in before deploying.

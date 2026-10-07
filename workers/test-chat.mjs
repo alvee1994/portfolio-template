@@ -1,13 +1,12 @@
-// Checks the claude-messages or openrouter Worker in-process against the real API. Spends a cent or two.
-// Usage: ANTHROPIC_API_KEY=... node test-chat.mjs claude-messages
-//        OPENROUTER_API_KEY=... node test-chat.mjs openrouter
+// Checks the OpenRouter Worker in-process against the real API. Spends under a cent.
+// Usage, from workers/: OPENROUTER_API_KEY=sk-or-... node test-chat.mjs
 // Node cannot import .txt like Wrangler does, so the profile is inlined into a temp copy of the Worker.
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import assert from "node:assert/strict";
 
-const dir = process.argv[2] || "claude-messages";
+const dir = "openrouter";
 const here = path.dirname(new URL(import.meta.url).pathname);
 const profile = fs.readFileSync(path.join(here, "profile.txt"), "utf8");
 const src = fs.readFileSync(path.join(here, dir, "worker.js"), "utf8")
@@ -19,8 +18,7 @@ fs.unlinkSync(tmp);
 
 const env = {
   ALLOWED_ORIGIN: "http://localhost:8000",
-  MODEL: process.env.MODEL || (dir === "openrouter" ? "deepseek/deepseek-v3.2" : "claude-sonnet-5-5"),
-  ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
+  MODEL: process.env.MODEL || "openai/gpt-6-luna",
   OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
   TURNSTILE_SECRET: "1x0000000000000000000000000000000AA", // Cloudflare test secret, always passes
   SIGNING_SECRET: "test-secret",
@@ -38,10 +36,9 @@ assert.equal((await call("/chat", { ...t, messages: [{ role: "assistant", conten
 const intro = await (await call("/chat", { ...t, messages: [] })).json();
 console.log("intro:", intro.reply, intro.usage);
 assert.ok(intro.reply);
-const hist = [{ role: "assistant", content: intro.reply }, { role: "user", content: "What did he build at Mesh Bio?" }];
+const hist = [{ role: "assistant", content: intro.reply }, { role: "user", content: "What is their biggest achievement?" }];
 const second = await (await call("/chat", { ...t, messages: hist })).json();
 console.log("answer:", second.reply.slice(0, 200), second.usage);
 const off = await (await call("/chat", { ...t, messages: [...hist, { role: "assistant", content: second.reply }, { role: "user", content: "Write me a poem about cats." }] })).json();
 console.log("off-topic:", off.reply);
-if (dir === "claude-messages") assert.ok(second.usage.cache_read > 0, "second call should read the cached profile");
 console.log("ok");

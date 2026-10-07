@@ -1,51 +1,136 @@
 # Instructions for coding agents
 
-You are helping a student turn this template into their own portfolio page with an AI agent that answers visitors' questions about them. The student may not be technical. Explain each step in one or two plain sentences, do the work yourself, and ask before anything that costs money or touches secrets.
+You are helping a student turn this template into their own portfolio page with an AI agent that answers visitors' questions about them. Assume the student is not technical. Do the work yourself. The student should only have to log in, approve, and paste their API key into a file. Explain each step in one plain sentence. Ask before anything that costs money.
 
-Read README.md for the full architecture, security notes and troubleshooting table. This file is the order of work.
+The student-facing walkthrough is GUIDE.md. README.md has the architecture, security notes and a troubleshooting table. This file is the order of work.
 
 ## Ground rules
 
-- The repo is public. Never commit a CV, `workers/profile.txt`, `.dev.vars`, or any key.
-- API keys go into Cloudflare only, with `npx wrangler secret put <NAME>`. The student pastes the key into the terminal prompt themselves. Never ask them to paste a key into the chat, and never write it to a file.
-- `config.js` is public. Only Worker URLs, the Turnstile sitekey and the greeting go there.
-- Every id in the repo is a placeholder (`depl_...`, `<github-username>`, `<your-subdomain>`, the Turnstile test sitekey). The student creates their own in their own accounts: Worker address, Turnstile widget, and for the Managed Agent their own agent, environment and deployment. Never reuse ids from alvee1994.github.io or invent one. If a value is missing, ask the student or read it from their Cloudflare or Console account.
+- The repo is public. Never commit a CV, `prompt.txt`, `workers/profile.txt`, `.dev.vars`, or any key.
+- The student's OpenRouter key goes only into `workers/openrouter/.dev.vars` (gitignored), which the student fills in themselves. Never ask for the key in the chat. Never print, cat or read `.dev.vars` after the student has edited it.
+- You create the other secrets yourself (`SIGNING_SECRET`, `TURNSTILE_SECRET`). Never send the student to the Cloudflare dashboard for something the Cloudflare MCP can do.
+- `config.js` is public. Only the Worker URL, the Turnstile sitekey and the greeting go there.
+- Every id in the repo is a placeholder. Create the student's own in their own accounts. Never reuse ids from alvee1994.github.io or invent one.
 - Keep the ids `ask`, `launch` and `panel` in `index.html`, and keep the Content-Security-Policy meta tag.
 - Insert text with `textContent`, never `innerHTML`.
 - Do not touch `app.js` or the Worker code unless the student asks.
-- Use one Worker. Default to `workers/openrouter` (cheapest). Use `workers/claude-messages` if the student only has an Anthropic key.
-- If the Cloudflare MCP server is connected, you may use it to check the account, Workers and Turnstile. Deploy with `npx wrangler deploy`.
+- The only back end is OpenRouter, in `workers/openrouter`. Every request is pinned to zero data retention providers (`provider: { zdr: true, data_collection: "deny" }` in `worker.js`). Never remove that.
 
-## Repo
+## 0. Check the tools
 
-The student's repo should be their own copy of alvee1994/portfolio-template, made with **Use this template** and named `portfolio`. If they cloned the template itself, help them create their copy first.
+Run `git --version`, `node --version` and `gh auth status`. If one is missing, install it and log in (`gh auth login`, web browser, authenticate Git: yes).
 
-## Ask the student first
+Check the Cloudflare MCP by fetching the student's accounts. If it is not connected, give the student the connect steps from GUIDE.md step 4 and wait. If they cannot connect it, use the manual fallback at the end of this file.
 
-1. Their GitHub username. Everything below uses `https://<username>.github.io` as the page origin.
-2. Where their `prompt.txt` is (prepared before the session, see PREP.md). It has their name, their CV inside `<resume>` and detailed notes inside `<additional details>`. Never commit it.
-3. Which key they have: OpenRouter or Anthropic.
+## 1. Repo
 
-## Steps
+Get the username with `gh api user -q .login`. Do not ask for it. Below, `<username>` is that login **in lowercase** wherever it is part of an address: browsers send the page origin in lowercase, so `ALLOWED_ORIGIN`, the Turnstile domain and the page link must be lowercase. The page origin is `https://<username>.github.io`.
 
-1. **Knowledge.** Copy `workers/profile.example.txt` to `workers/profile.txt`. Replace `<Your Name>` and the pronouns. From `prompt.txt`, paste the `<resume>` text under `# Profile` and the `<additional details>` text under `# Experience repository`. Keep the rules block as is. Remove phone numbers, home address and anything else private. Confirm `git check-ignore workers/profile.txt` prints the path.
-2. **Page.** Fill `index.html` from the CV: `<title>`, meta description, the top bar name and initial, the tag, the headline (three short phrases), one-line summary, three results with numbers, experience, skills, education, contact. Keep the structure and classes. Plain, short sentences.
-3. **Worker.** In the chosen `workers/<name>/wrangler.toml`, set `ALLOWED_ORIGIN = "https://<username>.github.io"`. Then from that folder:
+The student may be on Windows (PowerShell). Prefer `node -e` over `grep`, `curl` or shell redirection, and write files with your file tool, not `>` or `>>`.
+
+If the current folder is not the student's own copy, create it from the template and move into it:
+
+```
+gh repo create portfolio --template alvee1994/portfolio-template --public --clone
+cd portfolio
+```
+
+If `portfolio` already exists on their account, ask before reusing or renaming.
+
+## 2. Ask the student
+
+1. Where their `prompt.txt` is (see GUIDE.md step 5). It has their name, their CV inside `<resume>` and notes inside `<additional details>`. If they have none, offer to interview them to write it. Never commit it.
+2. Confirm they finished GUIDE.md step 6: $5 credit, all Zero Data Retention switches on and saved in their OpenRouter workspace guardrail, a key with a $5 credit limit. Do not continue until they confirm the limit is set: it is what caps their bill. They do not paste the key yet.
+3. Which model. Default `openai/gpt-6-luna`. If they name another, check it has ZDR providers before using it:
    ```
-   npx wrangler login
-   npx wrangler deploy
+   node -e "fetch('https://openrouter.ai/api/v1/endpoints/zdr').then(r=>r.json()).then(j=>console.log(j.data.some(e=>e.model_id==='<model id>')))"
    ```
-   Keep the printed `https://worker-<name>.<subdomain>.workers.dev` address.
-4. **Secrets.** From the same folder, let the student run each and paste when prompted:
-   ```
-   npx wrangler secret put OPENROUTER_API_KEY     (or ANTHROPIC_API_KEY)
-   npx wrangler secret put SIGNING_SECRET          (any long random string)
-   ```
-5. **Turnstile.** Guide the student: dash.cloudflare.com > Turnstile > Add widget, hostname `<username>.github.io`, mode Managed. Then `npx wrangler secret put TURNSTILE_SECRET` with the secret key.
-6. **config.js.** Keep only the chosen entry in `window.BACKENDS`, set its `url` to the Worker address, set `TURNSTILE_SITEKEY` to the widget's sitekey, and set `GREETING` to one line in the student's name.
-7. **Publish.** Commit and push to `main`. Then the student sets repo Settings > Pages > Source: GitHub Actions, and runs the **Deploy page** workflow once from the Actions tab.
-8. **Test.** Open `https://<username>.github.io/portfolio/`, click "Ask my agent", ask about one achievement. If anything fails, use the troubleshooting table in README.md and `npx wrangler tail` in the Worker folder.
+   `false` means it will not work. Ask them to pick another from GUIDE.md step 6.4.
+
+## 3. Knowledge
+
+Copy `workers/profile.example.txt` to `workers/profile.txt`. Replace `<Your Name>` and the pronouns. Paste the `<resume>` text under `# Profile` and the `<additional details>` text under `# Experience repository`. Keep the rules block. Remove phone numbers, home address and anything else private. Confirm `git check-ignore workers/profile.txt` prints the path.
+
+## 4. Page
+
+Fill `index.html` from the CV: `<title>`, meta description, the top bar name and initial, the tag, the headline (three short phrases), one-line summary, three results with numbers, experience, skills, education, contact. Keep the structure and classes. Plain, short sentences.
+
+## 5. Cloudflare, through the MCP
+
+Use the Cloudflare MCP for all of this. Use the account id from step 0.
+
+1. **workers.dev subdomain.** `GET /accounts/{account_id}/workers/subdomain`. If there is none, `PUT` it with `{"subdomain": "<username in lowercase>"}`. If that name is taken, try `<username>-portfolio`. Without a subdomain, `wrangler deploy` stops at a prompt the student cannot answer from here.
+2. **Turnstile widget.** `GET /accounts/{account_id}/challenges/widgets` and reuse a widget whose `domains` include `<username>.github.io` (read its secret with `GET .../challenges/widgets/{sitekey}`). Otherwise `POST /accounts/{account_id}/challenges/widgets` with `{"name": "portfolio", "domains": ["<username>.github.io"], "mode": "managed"}`. Keep `sitekey` and `secret` from the result.
+
+The Worker address will be `https://worker-openrouter.<subdomain>.workers.dev`.
+
+## 6. Secrets file
+
+Get a random signing secret:
+
+```
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+With your file tool (plain UTF-8, not shell redirection, which writes UTF-16 on Windows PowerShell), create `workers/openrouter/.dev.vars` with exactly three lines:
+
+```
+SIGNING_SECRET=<the random string>
+TURNSTILE_SECRET=<secret from step 5>
+OPENROUTER_API_KEY=
+```
+
+Then confirm `git check-ignore workers/openrouter/.dev.vars` prints the path.
+
+Open it for the student: `code .dev.vars` if VS Code is installed, else `open -e .dev.vars` (Mac) or `notepad .dev.vars` (Windows). Tell them: "Paste your OpenRouter key right after `OPENROUTER_API_KEY=`, no spaces, then save and close." Then check without reading it:
+
+```
+node -e "console.log(/^OPENROUTER_API_KEY=sk-or-\S+\s*$/m.test(require('fs').readFileSync('.dev.vars','utf8')))"
+```
+
+It must print `true`. If not, ask them to check the line again.
+
+## 7. Worker
+
+In `workers/openrouter/wrangler.toml`, set `ALLOWED_ORIGIN = "https://<username>.github.io"` (no path, no trailing slash) and `MODEL` to the chosen model id. Then from `workers/openrouter/`:
+
+```
+npx wrangler login
+npx wrangler deploy --secrets-file .dev.vars
+```
+
+`login` opens a browser. The student clicks **Allow**. `deploy` uploads the Worker and all three secrets at once. Check the printed address matches step 5.
+
+## 8. config.js
+
+Set `WORKER_URL` to the Worker address. Set `TURNSTILE_SITEKEY` to the sitekey. Set `GREETING` to one line in the student's name.
+
+## 9. Publish
+
+From the repo root: `git status` (no private files), then commit and push to `main`. Turn on Pages and run the deploy once:
+
+```
+gh api -X POST repos/<username>/portfolio/pages -f build_type=workflow
+gh workflow run "Deploy page"
+```
+
+A 409 from the first command means Pages is already on. Check once with `gh run list --limit 1`. Do not loop. If it is still running, tell the student it takes 1 to 2 minutes.
+
+## 10. Test
+
+Ask the student to open `https://<username>.github.io/portfolio/`, click "Ask my agent" and ask about one achievement. If it fails, match the error to the troubleshooting table in README.md, and run `npx wrangler tail` in `workers/openrouter/` while they retry. A new workers.dev subdomain can take a few minutes before it answers.
+
+## Later changes
+
+- **Page:** edit `index.html`, commit, push. Pages republishes.
+- **Knowledge:** edit `workers/profile.txt`, then `npx wrangler deploy` in `workers/openrouter/`. A push does not update the Worker.
+- **Model:** check the id against the ZDR list (step 2), set `MODEL` in `wrangler.toml`, `npx wrangler deploy`, commit.
+- **Key:** the student edits `.dev.vars`, then `npx wrangler deploy --secrets-file .dev.vars`.
 
 ## Done when
 
-The page is live with the student's own content, the chat answers from their profile, and `git status` shows no private files staged.
+The page is live with the student's own content, the chat answers from their profile, and `git status` shows no private files.
+
+## Manual fallback (no Cloudflare MCP)
+
+Only if the MCP cannot be connected. Step 5.1: run `npx wrangler deploy` in the student's own terminal once, and let them answer the subdomain prompt. Step 5.2: guide them to dash.cloudflare.com > Turnstile > Add widget, hostname `<username>.github.io`, mode Managed. They paste the secret key into `.dev.vars` after `TURNSTILE_SECRET=` and give you the sitekey, which is public.

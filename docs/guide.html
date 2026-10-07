@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Portfolio agent: setup guide</title>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --ink: #15263A; --muted: #677A8C; --blue: #2B74C8; --sky: #EEF5FD; --sky2: #D5E6F8; --line: #E4ECF4; --warn: #B4442A; --warnbg: #FCF1EE;
+    --mono: "JetBrains Mono", monospace;
+  }
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #fff; }
+  body { color: var(--ink); font: 400 9.6pt/1.55 Inter, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  h1, h2, h3, .big { font-family: "General Sans", Inter, sans-serif; font-weight: 500; letter-spacing: -.01em; }
+  a { color: var(--blue); text-decoration: underline; text-decoration-color: var(--sky2); text-underline-offset: 2px; }
+  p { margin: 0 0 8px; }
+  b { font-weight: 600; }
+
+  .page { width: 210mm; height: 297mm; position: relative; overflow: hidden; padding: 25mm 20mm 20mm; break-after: page; }
+  .page:last-child { break-after: auto; }
+  .runhead { position: absolute; top: 12mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between;
+             font: 500 7.4pt Inter; letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
+             border-bottom: 1px solid var(--line); padding-bottom: 3mm; }
+  .runhead span:last-child { color: var(--blue); }
+  .foot { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between;
+          font: 400 7.4pt Inter; color: var(--muted); }
+
+  .eyebrow { font: 600 7.4pt Inter; letter-spacing: .14em; text-transform: uppercase; color: var(--blue); margin-bottom: 5px; }
+  h2 { font-size: 23pt; line-height: 1.12; margin: 0 0 9px; }
+  h3 { font-size: 11.5pt; margin: 0 0 5px; }
+  .lead { font-size: 11.5pt; line-height: 1.5; max-width: 155mm; }
+  .muted { color: var(--muted); }
+  .small { font-size: 8.8pt; }
+  .rule { border: 0; border-top: 1px solid var(--line); margin: 6mm 0 5mm; }
+
+  code { font-family: var(--mono); font-size: 8.3pt; background: var(--sky); padding: 1px 4px; border-radius: 3px; }
+  .term { background: #F7FAFE; border: 1px solid var(--sky2); color: var(--ink); font-family: var(--mono); font-size: 8pt; line-height: 1.55;
+          border-radius: 8px; padding: 7px 11px; margin: 4px 0 8px; white-space: pre-wrap; word-break: break-word; }
+  .term::before { content: attr(data-label); display: block; font: 600 6.6pt Inter; letter-spacing: .12em; text-transform: uppercase; color: var(--blue); margin-bottom: 3px; }
+  .paste { background: var(--sky); border-radius: 10px; padding: 10px 14px; margin: 5px 0 10px; }
+  .paste::before { content: attr(data-label); display: block; font: 600 6.6pt Inter; letter-spacing: .12em; text-transform: uppercase; color: var(--blue); margin-bottom: 4px; }
+  .paste code { background: #fff; }
+
+  /* cover */
+  .cover { background: var(--sky); padding: 20mm; }
+  .cover .brand { font: 600 8pt Inter; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .cover svg { position: absolute; right: 0; top: 0; }
+  .cover .title { position: absolute; left: 20mm; right: 20mm; top: 112mm; }
+  .cover h1 { font-size: 46pt; line-height: 1.02; margin: 0 0 16px; font-weight: 500; }
+  .cover .title p { font-size: 13pt; line-height: 1.45; color: var(--muted); max-width: 125mm; }
+  .cover .facts { position: absolute; left: 20mm; right: 20mm; bottom: 34mm; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8mm; }
+  .cover .facts div { border-top: 1px solid var(--sky2); padding-top: 4mm; font-size: 10pt; line-height: 1.45; }
+  .cover .facts small { display: block; font: 600 7pt Inter; letter-spacing: .12em; text-transform: uppercase; color: var(--blue); margin-bottom: 3px; }
+  .cover .cta { position: absolute; left: 20mm; bottom: 18mm; font: 600 9.5pt Inter; color: var(--blue); border: 1px solid var(--blue); padding: 7px 14px; border-radius: 20px; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 9mm; }
+  .flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4mm; position: relative; margin-top: 3mm; }
+  .flow::before { content: ""; position: absolute; top: 13px; left: 14px; right: 14px; border-top: 1px solid var(--sky2); }
+  .flow div { position: relative; font-size: 8.6pt; line-height: 1.42; color: var(--muted); }
+  .flow b { display: block; color: var(--ink); font: 500 10pt "General Sans"; margin: 7px 0 2px; }
+  .dot { width: 27px; height: 27px; border-radius: 50%; background: #fff; border: 1px solid var(--blue); color: var(--blue);
+         display: flex; align-items: center; justify-content: center; font: 600 9pt Inter; position: relative; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+  th { text-align: left; font: 600 6.8pt Inter; letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+       padding: 0 9px 5px 0; border-bottom: 1px solid var(--ink); }
+  td { padding: 6px 9px 6px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  td.name { font-weight: 600; width: 34mm; }
+
+  .opener { border-bottom: 1px solid var(--line); padding-bottom: 6mm; margin-bottom: 7mm; }
+  .opener h2 { font-size: 30pt; margin-bottom: 6px; }
+  .opener p { color: var(--muted); font-size: 11pt; margin: 0; max-width: 150mm; }
+  .plan td { padding: 7px 9px 7px 0; }
+  .plan .n { font: 500 12pt "General Sans"; color: var(--blue); width: 11mm; }
+  .plan .t { width: 16mm; white-space: nowrap; color: var(--muted); }
+  .bar { height: 4px; background: var(--blue); border-radius: 2px; margin-top: 7px; opacity: .55; }
+  .plan td.b { width: 26mm; }
+
+  .stephead { display: grid; grid-template-columns: 21mm 1fr; align-items: end; margin-bottom: 4mm; }
+  .stepnum { font: 400 38pt/0.9 "General Sans"; color: var(--blue); letter-spacing: -.03em; }
+  .stephead h2 { font-size: 19pt; margin: 0; }
+  .stephead .eyebrow { margin-bottom: 3px; }
+  .done { display: flex; gap: 10px; align-items: baseline; border-top: 1px solid var(--sky2); border-bottom: 1px solid var(--sky2);
+          padding: 6px 0; margin: 0 0 4mm; font-size: 9pt; }
+  .done small { font: 600 6.6pt Inter; letter-spacing: .12em; text-transform: uppercase; color: var(--blue); white-space: nowrap; }
+  ul.clean { list-style: none; padding: 0; margin: 0; }
+  ul.clean > li { padding: 6px 0 6px 16px; border-bottom: 1px solid var(--line); position: relative; }
+  ul.clean > li:last-child { border-bottom: 0; }
+  ul.clean > li::before { content: ""; position: absolute; left: 0; top: 14px; width: 6px; height: 1.5px; background: var(--blue); }
+  ol.num { margin: 0 0 6px; padding-left: 17px; }
+  ol.num li { margin-bottom: 4px; padding-left: 2px; }
+  ol.num li::marker { color: var(--blue); font-weight: 600; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+  .opt { border: 1px solid var(--line); border-radius: 12px; padding: 4.5mm; }
+  .opt h3 { font-size: 12pt; margin-bottom: 2px; }
+  .opt .who { font-size: 8.6pt; color: var(--muted); line-height: 1.4; margin-bottom: 5px; }
+  .opt .tag { display: inline-block; font: 600 6.4pt Inter; letter-spacing: .1em; text-transform: uppercase; background: var(--sky); color: var(--blue); padding: 2px 7px; border-radius: 10px; margin-bottom: 4px; }
+  .kv { font-size: 8.6pt; margin: 2px 0; }
+  .kv span { color: var(--muted); display: inline-block; width: 13mm; }
+  .opt .term { font-size: 7.6pt; padding: 6px 9px; }
+
+  .aside { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; margin-top: 4mm; }
+  .aside div { font-size: 8.8pt; line-height: 1.5; border-top: 1px solid var(--blue); padding-top: 3mm; }
+  .aside small { display: block; font: 600 6.6pt Inter; letter-spacing: .12em; text-transform: uppercase; color: var(--blue); margin-bottom: 2px; }
+
+  .box { background: var(--sky); border-radius: 12px; padding: 5mm 6mm; }
+  .box code { background: #fff; }
+  .warn { background: var(--warnbg); border-left: 3px solid var(--warn); border-radius: 0 10px 10px 0; padding: 4mm 5mm; margin: 3mm 0; }
+  .warn .eyebrow { color: var(--warn); }
+  .checks { list-style: none; padding: 0; margin: 2mm 0 0; display: grid; grid-template-columns: 1fr; gap: 1.5mm; }
+  .checks li { padding-left: 22px; position: relative; }
+  .checks li::before { content: ""; position: absolute; left: 0; top: 3px; width: 12px; height: 12px; border: 1px solid var(--blue); border-radius: 3px; background: #fff; }
+
+  .say { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6mm; margin: 3mm 0 5mm; }
+  .say .big { font-size: 26pt; line-height: 1; color: var(--blue); margin-bottom: 2mm; }
+  .say .h { font: 500 11.5pt "General Sans"; display: block; margin-bottom: 2px; color: var(--ink); }
+  .say div { font-size: 9pt; color: var(--muted); line-height: 1.45; }
+
+  .shot { width: 100%; border: 1px solid var(--line); border-radius: 8px; display: block; margin: 3mm 0 1mm; }
+  .cap { font-size: 7.8pt; color: var(--muted); }
+  .sub { font: 500 13pt "General Sans"; margin: 5mm 0 2mm; display: flex; gap: 8px; align-items: baseline; }
+  .sub span { font: 600 8pt Inter; color: var(--blue); letter-spacing: .06em; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<section class="page cover">
+  <div class="brand">Portfolio agent &nbsp;|&nbsp; Setup guide</div>
+  <svg width="420" height="420" viewBox="0 0 420 420" aria-hidden="true">
+    <circle cx="330" cy="120" r="200" fill="none" stroke="#D5E6F8" stroke-width="1"/>
+    <circle cx="330" cy="120" r="150" fill="none" stroke="#D5E6F8" stroke-width="1"/>
+    <circle cx="330" cy="120" r="100" fill="none" stroke="#C3DBF4" stroke-width="1"/>
+    <circle cx="188" cy="261" r="6" fill="#2B74C8"/>
+  </svg>
+  <div class="title">
+    <div class="eyebrow">Setup guide</div>
+    <h1>Build your own<br>portfolio agent</h1>
+    <p>A public page on GitHub with an AI agent that answers visitors' questions about you. Your AI assistant does the building.</p>
+  </div>
+  <div class="facts">
+    <div><small>Time</small>About 2 hours<br>most of it writing about you</div>
+    <div><small>Cost</small>$5 of OpenRouter credit<br>everything else is free</div>
+    <div><small>You do</small>Accounts, your story,<br>one key. The assistant does the rest</div>
+  </div>
+  <div class="cta">github.com/alvee1994/portfolio-template</div>
+</section>
+
+<!-- OVERVIEW -->
+<section class="page">
+  <div class="runhead"><span>Portfolio agent</span><span>Overview</span></div>
+  <div class="eyebrow">Overview</div>
+  <h2>What you will build</h2>
+  <p class="lead">A portfolio page with an AI agent built in. Visitors ask it about you, and it answers from your CV and notes.</p>
+  <p class="muted">Example: <a href="https://alvee1994.github.io/portfolio">alvee1994.github.io/portfolio</a>. Yours will look like this, with your own agent in the corner.</p>
+
+  <hr class="rule">
+  <div class="eyebrow">How it works</div>
+  <div class="flow">
+    <div><span class="dot">1</span><b>Visitor</b>Opens your page and asks a question.</div>
+    <div><span class="dot">2</span><b>GitHub Pages</b>Your public page with the chat box.</div>
+    <div><span class="dot">3</span><b>Cloudflare</b>A small program, the Worker. Holds your key. The page never sees it.</div>
+    <div><span class="dot">4</span><b>OpenRouter</b>One account and one key for hundreds of models.</div>
+    <div><span class="dot">5</span><b>AI model</b>Answers from what you wrote. Keeps nothing.</div>
+  </div>
+
+  <hr class="rule">
+  <div class="two">
+    <div>
+      <div class="eyebrow">You do</div>
+      <ul class="clean">
+        <li>Create three free accounts</li>
+        <li>Install one AI assistant</li>
+        <li>Write about yourself</li>
+        <li>Add $5 to OpenRouter and make one key</li>
+        <li>Paste the key into one file, click Allow, approve</li>
+      </ul>
+    </div>
+    <div>
+      <div class="eyebrow">Your assistant does</div>
+      <ul class="clean">
+        <li>Sets up Git, Node.js and GitHub on your laptop</li>
+        <li>Copies the template and writes your page</li>
+        <li>Turns your notes into the agent's knowledge</li>
+        <li>Sets up Cloudflare, the bot check and the secrets</li>
+        <li>Publishes your page</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="rule">
+  <div class="eyebrow">Words you will see</div>
+  <table>
+    <tr><td class="name">Repo</td><td>A project folder on GitHub. Yours is called <code>portfolio</code> and is public.</td></tr>
+    <tr><td class="name">Worker</td><td>The small program on Cloudflare that talks to OpenRouter for your page.</td></tr>
+    <tr><td class="name">API key</td><td>A password that lets the Worker use your OpenRouter credit. Keep it secret.</td></tr>
+    <tr><td class="name">Model / provider</td><td>The model writes the answers, for example GPT-6 Luna. The provider is the company that runs it on its servers.</td></tr>
+    <tr><td class="name">ZDR</td><td>Zero data retention. The provider keeps nothing from the conversation.</td></tr>
+    <tr><td class="name">Turnstile</td><td>Cloudflare's bot check. Stops bots from using up your credit.</td></tr>
+  </table>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>2</span></div>
+</section>
+
+<!-- PLAN + STEP 1 -->
+<section class="page">
+  <div class="runhead"><span>Portfolio agent</span><span>Part 1 &nbsp;·&nbsp; Prepare</span></div>
+  <div class="opener">
+    <div class="eyebrow">The plan</div>
+    <h2>Eight steps</h2>
+    <p>Do them in order. Steps 1 to 6 prepare. Step 7 is where your assistant builds everything.</p>
+  </div>
+  <table class="plan">
+    <tr><th></th><th>Step</th><th>Time</th><th></th><th>You are done when</th></tr>
+    <tr><td class="n">01</td><td>Create accounts</td><td class="t">15 min</td><td class="b"><div class="bar" style="width:33%"></div></td><td>You can log in to GitHub, Cloudflare and OpenRouter</td></tr>
+    <tr><td class="n">02</td><td>Pick your AI assistant</td><td class="t">10 min</td><td class="b"><div class="bar" style="width:22%"></div></td><td>It starts on your laptop</td></tr>
+    <tr><td class="n">03</td><td>Let it set up the laptop</td><td class="t">15 min</td><td class="b"><div class="bar" style="width:33%"></div></td><td>Git, Node.js and GitHub are ready</td></tr>
+    <tr><td class="n">04</td><td>Connect it to Cloudflare</td><td class="t">5 min</td><td class="b"><div class="bar" style="width:11%"></div></td><td>It names your Cloudflare account</td></tr>
+    <tr><td class="n">05</td><td><b>Write about yourself</b></td><td class="t">45 min</td><td class="b"><div class="bar" style="width:100%;opacity:1"></div></td><td><code>prompt.txt</code> is saved</td></tr>
+    <tr><td class="n">06</td><td>Set up OpenRouter</td><td class="t">15 min</td><td class="b"><div class="bar" style="width:33%"></div></td><td>$5 credit, ZDR on, key with a $5 limit</td></tr>
+    <tr><td class="n">07</td><td>Build it</td><td class="t">20 min</td><td class="b"><div class="bar" style="width:44%"></div></td><td>Your page is live</td></tr>
+    <tr><td class="n">08</td><td>Try it and share it</td><td class="t">5 min</td><td class="b"><div class="bar" style="width:11%"></div></td><td>The agent answers about you</td></tr>
+  </table>
+
+  <div style="margin-top:9mm">
+    <div class="stephead"><div class="stepnum">01</div><div><div class="eyebrow">Step 1 &nbsp;·&nbsp; 15 min</div><h2>Create accounts</h2></div></div>
+    <div class="done"><small>Done when</small>You can log in to GitHub, Cloudflare and OpenRouter.</div>
+    <ul class="clean">
+      <li><b>GitHub.</b> Sign up at <a href="https://github.com/signup">github.com/signup</a>, Free plan. Your username becomes your web address (<code>&lt;username&gt;.github.io</code>), so pick a professional one. <a href="https://www.youtube.com/watch?v=X6sohvgcUo8">Watch the video</a></li>
+      <li><b>Cloudflare.</b> Go to <a href="https://dash.cloudflare.com/sign-up">dash.cloudflare.com/sign-up</a> and click <b>Sign up with GitHub</b>. No new password needed. Skip any domain or plan offer.</li>
+      <li><b>OpenRouter.</b> Go to <a href="https://openrouter.ai">openrouter.ai</a> and click <b>Sign up</b>. Signing in with Google or GitHub is fine. You set it up in step 6.</li>
+    </ul>
+  </div>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>3</span></div>
+</section>
+
+<!-- STEP 2 -->
+<section class="page">
+  <div class="runhead"><span>Portfolio agent</span><span>Part 1 &nbsp;·&nbsp; Prepare</span></div>
+  <div class="stephead"><div class="stepnum">02</div><div><div class="eyebrow">Step 2 &nbsp;·&nbsp; 10 min</div><h2>Pick your AI assistant</h2></div></div>
+  <div class="done"><small>Done when</small>Your assistant starts and you are logged in.</div>
+  <p><b>You need only one.</b> Pick the one you already pay for or use. If you have none, Antigravity is free. Skip the install if yours is already on your laptop. The next steps have a line for each. Follow only the lines for yours.</p>
+
+  <div class="grid2" style="margin-top:4mm">
+    <div class="opt">
+      <span class="tag">No terminal</span>
+      <h3>Claude desktop app, Code tab</h3>
+      <div class="who">This is Claude Code inside the Claude app. Needs a Claude Pro or Max subscription.</div>
+      <div class="kv"><span>Install</span>Download from <a href="https://claude.com/download">claude.com/download</a></div>
+      <div class="kv"><span>Start</span>Open the app, click the <b>Code</b> tab</div>
+      <div class="kv"><span>Log in</span>Claude account</div>
+    </div>
+    <div class="opt">
+      <h3>Claude Code in a terminal</h3>
+      <div class="who">Same Claude Code, in a terminal. Needs a Claude Pro or Max subscription.</div>
+      <div class="term" data-label="Mac">curl -fsSL https://claude.ai/install.sh | bash</div>
+      <div class="term" data-label="Windows">irm https://claude.ai/install.ps1 | iex</div>
+      <div class="kv"><span>Start</span><code>claude</code></div>
+    </div>
+    <div class="opt">
+      <h3>Codex</h3>
+      <div class="who">Needs a paid ChatGPT plan. Install Node.js LTS from <a href="https://nodejs.org">nodejs.org</a> first.</div>
+      <div class="term" data-label="Mac and Windows">npm install -g @openai/codex</div>
+      <div class="kv"><span>Start</span><code>codex</code></div>
+      <div class="kv"><span>Log in</span>ChatGPT account</div>
+    </div>
+    <div class="opt">
+      <span class="tag">Free option</span>
+      <h3>Antigravity IDE</h3>
+      <div class="who">Google's free tier is generous. Choose the model <b>Gemini 3.1 Pro (Low)</b>.</div>
+      <div class="kv"><span>Install</span>Download <a href="https://antigravity.google/product/antigravity-ide/">Antigravity IDE</a></div>
+      <div class="kv"><span>Start</span>Open the app</div>
+      <div class="kv"><span>Log in</span>Google account</div>
+      <div class="kv"><span>Videos</span><a href="https://www.youtube.com/watch?v=tZ4JviUx-x4">Get started</a>, <a href="https://www.youtube.com/watch?v=HKPIRY1fc5s">Windows</a></div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:6mm">Using a terminal? Open one like this</h3>
+  <div class="two" style="gap:6mm">
+    <div class="kv" style="font-size:9pt"><b>Mac:</b> press <code>Cmd + Space</code>, type <code>Terminal</code>, press Enter. Paste with <code>Cmd + V</code>.</div>
+    <div class="kv" style="font-size:9pt"><b>Windows:</b> press the Windows key, type <code>PowerShell</code>, press Enter. Not "Run as administrator". Paste with <code>Ctrl + V</code>.</div>
+  </div>
+  <div class="aside" style="margin-top:6mm">
+    <div><small>Not recognized?</small>Close the terminal and open a new one. New programs only show up in a new window. Still not recognized? Restart the laptop.</div>
+    <div><small>Windows and Codex</small>If you see <code>running scripts is disabled</code>, run <code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code> and type <code>Y</code>.</div>
+  </div>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>4</span></div>
+</section>
+
+<!-- STEP 3 + 4 -->
+<section class="page">
+  <div class="runhead"><span>Portfolio agent</span><span>Part 1 &nbsp;·&nbsp; Prepare</span></div>
+  <div class="stephead"><div class="stepnum">03</div><div><div class="eyebrow">Step 3 &nbsp;·&nbsp; 15 min</div><h2>Let your assistant set up the laptop</h2></div></div>
+  <div class="done"><small>Done when</small><span>It shows you <code>git --version</code>, <code>node --version</code> and <code>gh auth status</code> working.</span></div>
+  <p>Start your assistant. In the Claude desktop app: Code tab, <b>+ New session</b>, set <b>Environment</b> to <b>Local</b>, pick any folder, for example Documents. Then paste:</p>
+  <div class="paste" data-label="Paste this into your assistant">Help me set up this laptop. I am not technical, so go one step at a time and tell me exactly what to click or type. Check what is already installed first. I need: Git, Node.js (LTS version) and the GitHub CLI. Set my Git name and email so I can save changes. Then log me in to GitHub with <code>gh auth login</code> using the web browser, and let it handle Git logins too. At the end, run <code>git --version</code>, <code>node --version</code> and <code>gh auth status</code> to show me it all works.</div>
+  <p class="muted small">Approve each step it asks about. If it gets stuck, paste the error back and ask it to fix it.</p>
+
+  <hr class="rule">
+  <div class="stephead"><div class="stepnum">04</div><div><div class="eyebrow">Step 4 &nbsp;·&nbsp; 5 min</div><h2>Connect your assistant to Cloudflare</h2></div></div>
+  <div class="done"><small>Done when</small>You ask "List my Cloudflare account name." and it names your account.</div>
+  <p>This lets your assistant set up Cloudflare for you, including the bot check. Without it, you would click through the Cloudflare dashboard yourself.</p>
+  <div class="grid2">
+    <div class="opt">
+      <h3>Claude desktop app</h3>
+      <div class="who">Click <b>+</b> next to the prompt box, <b>Connectors</b>, <b>Manage connectors</b>. Find <b>Cloudflare</b>, click <b>Connect</b>. Not listed? <b>Add custom connector</b>, name <code>Cloudflare</code>, URL:</div>
+      <div class="term" data-label="URL">https://mcp.cloudflare.com/mcp</div>
+    </div>
+    <div class="opt">
+      <h3>Claude Code in a terminal</h3>
+      <div class="who">Start <code>claude</code>, type these one at a time:</div>
+      <div class="term" data-label="Inside claude">/plugin marketplace add cloudflare/skills
+/plugin install cloudflare@cloudflare</div>
+      <div class="kv">Type <code>/exit</code>, start <code>claude</code> again. <code>/mcp</code>, pick <b>cloudflare</b>, <b>Authenticate</b>.</div>
+    </div>
+    <div class="opt">
+      <h3>Codex</h3>
+      <div class="who">Run these in the terminal, not inside Codex:</div>
+      <div class="term" data-label="Terminal">codex mcp add cloudflare --url https://mcp.cloudflare.com/mcp
+codex mcp login cloudflare</div>
+    </div>
+    <div class="opt">
+      <h3>Antigravity IDE</h3>
+      <div class="who">Agent panel, <b>...</b> menu, <b>MCP Servers</b>, <b>Manage MCP Servers</b>, <b>View raw config</b>. Paste and save:</div>
+      <div class="term" data-label="Raw config">{ "mcpServers": { "cloudflare": { "serverUrl": "https://mcp.cloudflare.com/mcp" } } }</div>
+    </div>
+  </div>
+  <p style="margin-top:3mm"><b>All:</b> a browser opens. Sign in to Cloudflare and approve.</p>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>5</span></div>
+</section>
+
+<!-- STEP 5 -->
+<section class="page">
+  <div class="runhead"><span>Portfolio agent</span><span>Part 1 &nbsp;·&nbsp; Prepare</span></div>
+  <div class="stephead"><div class="stepnum">05</div><div><div class="eyebrow">Step 5 &nbsp;·&nbsp; 45 min &nbsp;·&nbsp; The most important step</div><h2>Write about yourself</h2></div></div>
+  <div class="done"><small>Done when</small><span><code>prompt.txt</code> is saved in your Documents folder with your name, CV and detailed document.</span></div>
+  <p>Your agent is only as good as what you give it. A CV is a short list. Your agent needs the story behind every line.</p>
+
+  <h3 style="margin-top:4mm">A. Get interviewed by an AI</h3>
+  <p>Use any AI chat: ChatGPT, Claude, Gemini, or your assistant. Give it your CV and paste:</p>
+  <div class="paste" data-label="Paste this into any AI, with your CV">Here is my CV. Interview me one question at a time to build a detailed markdown document about my career, far more detailed than my CV. For every role and project, ask about the problem, what I did, the tools, the result with numbers, and what I learned. Then 3 to 5 short stories (context, challenge, choice, result), my strengths, and what I want next. Use plain language. Stop when you have covered every experience, then give me the full document.</div>
+  <p class="muted small">Take your time with the answers. Real details and numbers make the difference.</p>
+
+  <h3 style="margin-top:4mm">B. Put it together in prompt.txt</h3>
+  <p>Copy the template into a plain text file: Notepad on Windows, TextEdit on Mac (choose <b>Format &gt; Make Plain Text</b> first). Fill in your name, paste your CV and the document, and save it as <code>prompt.txt</code> in your <b>Documents</b> folder.</p>
+  <div class="term" data-label="prompt.txt">You represent [your name] professionally on their portfolio website, using their resume and additional details as your source of truth. Answer visitors' questions about their background, skills and experience like a sharp, laconic salesperson: confident, concise, no fluff, always putting them in the best honest light.
+
+&lt;resume&gt;
+[paste your CV text here]
+&lt;/resume&gt;
+
+&lt;additional details&gt;
+[paste your detailed document here]
+&lt;/additional details&gt;</div>
+  <div class="warn">
+    <div class="eyebrow">Leave out anything private</div>
+    Strangers will read what your agent says, and this text goes to an AI provider with every question. No phone number, home address, salary, health details or other people's names.
+  </div>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>6</span></div>
+</section>
+
+<!-- STEP 6: credit, privacy, key -->
+<section class="page">
+  <div class="runhead"><span>Portfolio agent</span><span>Part 1 &nbsp;·&nbsp; Prepare</span></div>
+  <div class="stephead"><div class="stepnum">06</div><div><div class="eyebrow">Step 6 &nbsp;·&nbsp; 15 min</div><h2>Set up OpenRouter</h2></div></div>
+  <div class="done"><small>Done when</small>You have $5 credit, ZDR is on, and you have copied a key with a $5 limit.</div>
+  <p>Four parts, in order. Privacy comes before the key.</p>
+
+  <div class="sub"><span>6.1</span>Add $5 credit</div>
+  <ol class="num">
+    <li>Go to <a href="https://openrouter.ai/settings/credits">openrouter.ai/settings/credits</a>. Click <b>Add Credits</b>, enter <code>5</code>, pay by card.</li>
+    <li>The card fee is 5.5%, at least $0.80. So $5 of credit costs about $5.80.</li>
+    <li>Leave <b>auto top-up</b> off. When the credit runs out, the agent stops. Nothing more is charged.</li>
+  </ol>
+
+  <div class="sub"><span>6.2</span>Privacy settings</div>
+  <p>Open <a href="https://openrouter.ai/workspaces/default/guardrails/default/models">openrouter.ai/workspaces/default/guardrails/default/models</a>, in the menu <b>Guardrails &gt; Workspace Guardrail &gt; Model &amp; Provider Access</b>. It applies to every key in your workspace.</p>
+  <ol class="num">
+    <li><b>Zero Data Retention: turn on all five switches.</b> All other models, Anthropic, OpenAI, Google, SpaceXAI. OpenRouter then only uses providers that store nothing.</li>
+    <li><b>Data Training: leave both switches off</b> (paid and free endpoints that train on request data).</li>
+    <li>Click <b>Save</b> at the top right. Nothing changes until you do.</li>
+  </ol>
+  <img class="shot" src="openrouter-privacy.png" alt="OpenRouter Model and Provider Access page with Zero Data Retention on and Data Training off" style="width:68%">
+  <p class="small muted" style="margin-top:3mm"><b>Prompt logging</b> is off by default. Leave it off, even for the 1% discount. OpenRouter then keeps only time, model and token counts, not the text.</p>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>7</span></div>
+</section>
+
+<section class="page">
+  <div class="runhead"><span>Portfolio agent</span><span>Part 1 &nbsp;·&nbsp; Prepare</span></div>
+  <div class="sub" style="margin-top:0"><span>6.3</span>Create your API key</div>
+  <ol class="num">
+    <li>Go to <a href="https://openrouter.ai/workspaces/default/keys">openrouter.ai/workspaces/default/keys</a> and click <b>+ New Key</b>. Name: <code>portfolio</code>.</li>
+    <li><b>Expiration:</b> <b>No expiration</b> is fine. If you pick a date, the agent stops that day.</li>
+    <li><b>Credit limit:</b> <b>Custom amount</b>, <code>5</code>. <b>Reset limit every...:</b> leave on <b>N/A</b>. Click <b>Create</b>.</li>
+    <li>Copy the key now. It starts with <code>sk-or-</code>. Keep the tab open until step 7.</li>
+  </ol>
+  <img class="shot" src="openrouter-new-key.png" alt="OpenRouter API Keys page with the New Key dialog" style="width:100%">
+  <div class="warn" style="margin-top:3mm">
+    <div class="eyebrow">Always set the $5 limit</div>
+    It is the one thing that protects you from a big bill if someone abuses your agent or the key leaks. Never paste the key into the chat, an email or a message. If it leaks, delete it on the API Keys page and make a new one.
+  </div>
+
+  <div class="box" style="margin-top:7mm">
+    <div class="eyebrow">Before step 7, check</div>
+    <ul class="checks">
+      <li>Your balance shows $5 on the Credits page</li>
+      <li>All five Zero Data Retention switches are on, and you clicked <b>Save</b></li>
+      <li>Both Data Training switches are off</li>
+      <li>Your key shows a $5 limit on the API Keys page</li>
+      <li>You have the key copied, starting with <code>sk-or-</code></li>
+      <li>You know your model id, or you keep the default <code>openai/gpt-6-luna</code></li>
+    </ul>
+  </div>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>8</span></div>
+</section>
+
+<!-- STEP 6.4: model -->
+<section class="page">
+  <div class="runhead"><span>Portfolio agent</span><span>Part 1 &nbsp;·&nbsp; Prepare</span></div>
+  <div class="sub" style="margin-top:0"><span>6.4</span>Choose a model</div>
+  <div class="box" style="margin-bottom:5mm"><b>Not sure? Keep the default: <code>openai/gpt-6-luna</code>.</b> OpenAI's fast, low-cost model for chat. It has a ZDR provider and costs about $0.10 per million input tokens. Your assistant sets it up for you.</div>
+
+  <h3>Find models on the Models page</h3>
+  <p>Open <a href="https://openrouter.ai/models">openrouter.ai/models</a> and set the filters on the left:</p>
+  <ol class="num">
+    <li><b>Input modalities:</b> tick <b>Text</b>.</li>
+    <li><b>Zero data retention:</b> tick <b>Supported</b>. Only models on this list work with your agent.</li>
+    <li><b>Prompt pricing:</b> drag the slider down to about $0.50.</li>
+    <li>Top right, switch from <b>List</b> to <b>Table</b> to compare side by side. Skip models marked <b>(batch)</b> or <b>(free)</b>.</li>
+    <li>Click a model name. Its page shows the id under the title, for example <code>openai/gpt-6-luna</code>. Copy it.</li>
+  </ol>
+
+  <table style="margin-top:3mm">
+    <tr><th>Column</th><th>What it tells you</th><th>Look for</th></tr>
+    <tr><td class="name">Weekly Tokens</td><td>How much people use it</td><td>High usage usually means reliable</td></tr>
+    <tr><td class="name">Input</td><td>Price per million tokens you send</td><td>Below $0.50</td></tr>
+    <tr><td class="name">Output</td><td>Price per million tokens it writes</td><td>Below $2</td></tr>
+    <tr><td class="name">Context</td><td>How much text it reads at once</td><td>32,000 or more</td></tr>
+    <tr><td class="name">Latency</td><td>Time until the answer starts</td><td>Under 3 seconds</td></tr>
+  </table>
+
+  <h3 style="margin-top:5mm">Good options</h3>
+  <p class="muted small">Cheapest ZDR provider, price per million tokens, checked October 2026. Prices change: the Models page has today's numbers.</p>
+  <table>
+    <tr><th>Model id</th><th>Input</th><th>Output</th><th>Notes</th></tr>
+    <tr><td><code>openai/gpt-6-luna</code></td><td>$0.10</td><td>$0.50</td><td>The default. Made for fast, cheap chat</td></tr>
+    <tr><td><code>deepseek/deepseek-v3.2</code></td><td>from $0.26</td><td>from $0.38</td><td>Good all-rounder, several ZDR providers</td></tr>
+    <tr><td><code>deepseek/deepseek-v4-flash</code></td><td>from $0.09</td><td>from $0.18</td><td>Newer and cheaper. Test it first</td></tr>
+    <tr><td><code>mistralai/mistral-small-2603</code></td><td>from $0.15</td><td>from $0.60</td><td>From Mistral, a European company</td></tr>
+    <tr><td><code>google/gemini-3.5-flash-lite</code></td><td>from $0.15</td><td>from $1.25</td><td>Fast</td></tr>
+  </table>
+
+  <div class="two" style="margin-top:5mm;gap:7mm">
+    <div class="aside" style="grid-template-columns:1fr;margin:0"><div><small>What a question costs</small>Each question sends your whole <code>prompt.txt</code> and the chat so far, about 6,000 tokens, and gets about 200 back. With GPT-6 Luna that is under a tenth of a cent. $5 covers roughly 5,000 questions.</div></div>
+    <div class="aside" style="grid-template-columns:1fr;margin:0"><div><small>Test before you pick</small>Open <a href="https://openrouter.ai/chat">openrouter.ai/chat</a>, add one or two models, paste your <code>prompt.txt</code> as the system prompt. Ask what a recruiter would ask, and "What is their phone number?" (it should refuse).</div></div>
+  </div>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>9</span></div>
+</section>
+
+<!-- STEP 7 + 8 -->
+<section class="page">
+  <div class="runhead"><span>Portfolio agent</span><span>Part 2 &nbsp;·&nbsp; Build</span></div>
+  <div class="stephead"><div class="stepnum">07</div><div><div class="eyebrow">Step 7 &nbsp;·&nbsp; 20 min</div><h2>Build it</h2></div></div>
+  <div class="done"><small>Done when</small>Your assistant says the page is published.</div>
+  <p>Start your assistant in your Documents folder:</p>
+  <ul class="clean small">
+    <li><b>Claude desktop app:</b> Code tab, <b>+ New session</b>, <b>Environment: Local</b>, project folder <b>Documents</b>.</li>
+    <li><b>Terminal (Claude Code or Codex):</b> open a new terminal, type <code>cd Documents</code>, then <code>claude</code> or <code>codex</code>.</li>
+    <li><b>Antigravity:</b> File &gt; Open Folder &gt; Documents.</li>
+  </ul>
+  <p style="margin-top:3mm">Then paste this. Change the model id if you picked another one:</p>
+  <div class="paste" data-label="Paste this into your assistant">Create my own public repo called portfolio from the template alvee1994/portfolio-template with <code>gh repo create portfolio --template alvee1994/portfolio-template --public --clone</code>. Then read AGENTS.md in it and follow it to build my portfolio. My prompt.txt is in my Documents folder. Use the OpenRouter model openai/gpt-6-luna.</div>
+
+  <div class="eyebrow" style="margin-top:4mm">You do three things when it asks</div>
+  <div class="say">
+    <div><div class="big">1</div><span class="h">Paste your key</span>It opens a file called <code>.dev.vars</code>. Paste your key right after <code>OPENROUTER_API_KEY=</code>, no spaces. Save, close.</div>
+    <div><div class="big">2</div><span class="h">Allow Cloudflare</span>A browser opens for the Cloudflare login. Click <b>Allow</b>.</div>
+    <div><div class="big">3</div><span class="h">Approve</span>Read what it proposes before it acts. Say no if something looks wrong.</div>
+  </div>
+  <p class="muted small">The assistant checks the key line is filled in without reading your key. The key never goes into the chat or to GitHub.</p>
+
+  <hr class="rule">
+  <div class="stephead"><div class="stepnum">08</div><div><div class="eyebrow">Step 8 &nbsp;·&nbsp; 5 min</div><h2>Try it and share it</h2></div></div>
+  <p>Open <code>https://&lt;username&gt;.github.io/portfolio/</code> and click <b>Ask my agent</b>. The first time can take a few minutes to go live. Before you share the link, check:</p>
+  <ul class="checks">
+    <li>It answers correctly about two or three things in your CV</li>
+    <li>It refuses a question it should not answer, for example "What is your salary?"</li>
+    <li>The page has no typos and your contact details are right</li>
+  </ul>
+  <p style="margin-top:3mm">Then put the link on your LinkedIn, CV and email signature.</p>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>10</span></div>
+</section>
+
+<!-- KEEP IT RUNNING -->
+<section class="page">
+  <div class="runhead"><span>Portfolio agent</span><span>Part 3 &nbsp;·&nbsp; Keep it running</span></div>
+  <div class="eyebrow">Part 3</div>
+  <h2>Keep it running</h2>
+
+  <h3 style="margin-top:3mm">Change things</h3>
+  <p class="small">Tell your assistant in plain words. The page and the agent's knowledge are separate. When you update your CV, ask for both.</p>
+  <table>
+    <tr><th>You want to</th><th>Say</th><th>Takes</th></tr>
+    <tr><td>Change the page</td><td>"Add my new job to the page"</td><td>1 to 2 min</td></tr>
+    <tr><td>Change what the agent knows</td><td>"Add this project to my agent's knowledge and deploy the Worker"</td><td>1 min</td></tr>
+    <tr><td>Change the model</td><td>"Change my agent's model to <code>&lt;model id&gt;</code> and deploy the Worker"</td><td>1 min</td></tr>
+  </table>
+
+  <h3 style="margin-top:5mm">Watch the cost</h3>
+  <ul class="clean small">
+    <li><a href="https://openrouter.ai/activity">openrouter.ai/activity</a> shows every request: when, which model, tokens, cost. Not the text.</li>
+    <li>When the key's $5 limit or your balance runs out, the agent replies <code>error: Agent unavailable</code>. Add credit and raise the key's limit. Nothing needs redeploying.</li>
+  </ul>
+
+  <h3 style="margin-top:5mm">Privacy: where the text goes</h3>
+  <table>
+    <tr><th>Who</th><th>What they get</th><th>What they keep</th></tr>
+    <tr><td class="name">GitHub</td><td>Your page. It is public</td><td>Your page</td></tr>
+    <tr><td class="name">Cloudflare</td><td>The visitor's question, passing through your Worker</td><td>The Worker logs no message text and no IP address</td></tr>
+    <tr><td class="name">OpenRouter</td><td>The question, the chat so far, your agent's knowledge</td><td>Time, model, token counts. Not the text, as long as prompt logging stays off</td></tr>
+    <tr><td class="name">Model provider</td><td>The same as OpenRouter</td><td>Nothing. The Worker only allows ZDR providers</td></tr>
+  </table>
+  <p class="small" style="margin-top:3mm">ZDR is enforced twice: in your OpenRouter guardrail (6.2) and by the Worker on every request. A model with no ZDR provider makes the agent stop, rather than fall back to one that keeps data.</p>
+
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>11</span></div>
+</section>
+
+<!-- TROUBLESHOOTING + SAFETY -->
+<section class="page">
+  <div class="runhead"><span>Portfolio agent</span><span>Part 3 &nbsp;·&nbsp; Keep it running</span></div>
+  <h3>If something breaks</h3>
+  <p class="small">Paste the full error to your assistant and ask "what went wrong and how do I fix it?".</p>
+  <table class="small">
+    <tr><th>You see</th><th>What to do</th></tr>
+    <tr><td><code>Agent unavailable</code></td><td>Check balance, key limit and expiry on OpenRouter. Then ask the assistant to check the key and the model</td></tr>
+    <tr><td><code>Bot check failed</code></td><td>Ask it to check the Turnstile widget hostname and both keys</td></tr>
+    <tr><td><code>Not allowed</code></td><td>Ask it to check <code>ALLOWED_ORIGIN</code> and deploy the Worker again</td></tr>
+    <tr><td><code>Too many requests</code></td><td>Wait a minute. It is a limit per visitor</td></tr>
+    <tr><td><code>Failed to fetch</code></td><td>Wait a few minutes after the first deploy, then ask it to check <code>config.js</code></td></tr>
+    <tr><td>Old page after a change</td><td>Wait 2 minutes, refresh with Cmd + Shift + R (Mac) or Ctrl + F5 (Windows)</td></tr>
+  </table>
+
+  <h3 style="margin-top:7mm">What keeps you safe</h3>
+  <ul class="clean small">
+    <li>Your OpenRouter key lives only on Cloudflare and in <code>.dev.vars</code> on your laptop. That file never goes to GitHub.</li>
+    <li>The bot check and a limit per visitor stop people from running up your bill.</li>
+    <li><b>The $5 credit limit on your key is the hard stop. Never remove it.</b></li>
+    <li>The agent only talks about your portfolio. It refuses other topics and ignores visitors who try to change its rules.</li>
+    <li>Your repo is public. Never put your CV file or <code>prompt.txt</code> in it. The assistant knows this.</li>
+  </ul>
+
+  <div class="aside" style="margin-top:7mm">
+    <div><small>Turn it off</small>Delete the key on the OpenRouter API Keys page. The page stays up, the chat shows an error. To remove everything: delete <code>worker-openrouter</code> in Cloudflare and the <code>portfolio</code> repo on GitHub.</div>
+    <div><small>Full guide</small>Every step, with more detail: <a href="https://github.com/alvee1994/portfolio-template/blob/main/GUIDE.md">GUIDE.md</a> in the template repo.</div>
+  </div>
+  <div class="foot"><span>Portfolio agent &nbsp;|&nbsp; Setup guide</span><span>12</span></div>
+</section>
+
+</body>
+</html>

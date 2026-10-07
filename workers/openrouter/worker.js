@@ -1,5 +1,5 @@
-// Chat Worker on OpenRouter: the same page and gates, a non-Claude model behind them.
-// OpenRouter speaks the OpenAI chat format and routes to many providers. Caching depends on the provider.
+// Chat Worker on OpenRouter. OpenRouter speaks the OpenAI chat format and routes to many providers.
+// Every request is pinned to zero data retention providers. Caching depends on the provider.
 // Secrets: OPENROUTER_API_KEY, TURNSTILE_SECRET, SIGNING_SECRET
 // Vars: ALLOWED_ORIGIN, MODEL (an OpenRouter model id). Bindings: START_LIMIT, MSG_LIMIT (rate limits)
 import PROFILE from "../profile.txt";
@@ -73,6 +73,9 @@ async function chat(request, env, cors) {
       model: env.MODEL,
       max_tokens: 1024,
       messages: [{ role: "system", content: PROFILE }, ...messages],
+      // Privacy: only providers that keep nothing (zdr) and never train on prompts (deny).
+      // A model with no such provider fails with "Agent unavailable"; pick another model.
+      provider: { zdr: true, data_collection: "deny" },
     }),
   });
   if (!res.ok) {
